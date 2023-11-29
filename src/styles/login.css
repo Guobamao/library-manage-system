@@ -1,0 +1,62 @@
+/* 滚动条效果 */
+*::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 5px;
+    /* 滚动条宽度 */
+}
+
+*::-webkit-scrollbar-thumb {
+    /*滚动条滑块*/
+    border-radius: .5rem;
+    background-color: gray;
+}
+
+*::-webkit-scrollbar-track {
+    /*滚动条轨道*/
+    background: #f3f4f7;
+}
+
+body {
+    background-image: url("../assets/bg-images-1.png");
+    background-position-y: center;
+    background-position-x: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+}
+
+.admin-login-background {
+    width: 450px;
+    height: 300px;
+    position: absolute;
+    right: 5%;
+    top: 15%;
+}
+
+.logo-title {
+    text-align: center;
+    letter-spacing: 2px;
+    padding: 14px 0;
+}
+
+.logo-title h1 {
+    color: #1E9FFF;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.login-form {
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 18px;
+    padding: 14px 20px;
+    box-shadow: 0 0 8px #eeeeee;
+}
+.el-form-item {
+    width: 100%;
+}
