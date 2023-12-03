@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-container>
+        <el-container >
             <!-- 页面顶部 -->
             <el-header>
                 <el-row>
@@ -17,7 +17,7 @@
                 </el-row>
             </el-header>
             <!-- 页面主体容器 -->
-            <el-container>
+            <el-container class="container-body">
                 <!-- 侧边菜单栏 -->
                 <el-aside style="width: 200px;">
                     <el-menu background-color="#28333e" text-color="#fff" active-text-color="#ffd04b">
@@ -36,7 +36,7 @@
                     </el-menu>
                 </el-aside>
                 <!-- 主体内容 -->
-                <el-main>
+                <el-main class="container-main">
                     <!-- 标签栏 -->
                     <el-tabs v-model="currentTabIndex" @tab-remove="removeTab" @tab-click="handleTabClick">
                         <el-tab-pane v-for="item in Tabs" :key="item.index" :label="item.tagName" :closable="item.isClosable" :name="item.index"></el-tab-pane>

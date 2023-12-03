@@ -5,38 +5,42 @@
         <i class="el-icon-info"></i>
         <span style="margin-left: 5px;">系统公告</span>
       </div>
-      <div v-for="(item, index) in notices" :key="index" class="text item">
-        <div class="notice-title">{{ item.title }}</div>
-        <div class="notice-time">{{ item.time }}</div>
+      <div v-for="(item, index) in noticeData.records" :key="index" class="text item">
+        <el-table-column label="标题" width="200">
+          <el- type="primary" :underline="false" :href="item.url" target="_blank">{{item.topic}}</el->
+        </el-table-column>
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
-      notices: [
-        {
-          title: '列表内容 1',
-          time: '2020-01-01 10:00:00'
-        },
-        {
-          title: '列表内容 2',
-          time: '2020-01-02 11:02:11'
-        },
-        {
-          title: '列表内容 3',
-          time: '2020-01-03 12:00:00'
-        },
-        {
-          title: '列表内容 4',
-          time: '2020-01-04 13:00:00'
-        }
-      ]
+      noticeData: []
     }
   },
+  methods: {
+    loadData() {
+      axios.get("/notice/page", {
+        params: {
+          page: 1,
+          pageSize: 5
+        }
+      }).then(res => {
+        if (res.data.code === 1) {
+          this.noticeData = res.data.data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    }
+  },
+  mounted() {
+    this.loadData()
+  }
 }
 </script>
 

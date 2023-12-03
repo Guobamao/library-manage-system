@@ -39,6 +39,14 @@ const routes = [
       {
         path: 'adminList',
         component: () => import('../views/admin/AdminIndex.vue')
+      },
+      {
+        path: 'noticeList',
+        component: () => import('../views/notice/NoticeIndex.vue')
+      },
+      {
+        path: 'readerList',
+        component: () => import('../views/reader/ReaderIndex.vue')
       }
     ]
   },

@@ -63,6 +63,7 @@ export default {
                     }).then(res => {
                         if (res.data.code === 1) {
                             this.$message.success('登录成功')
+                            localStorage.setItem('id', res.data.data.id)
                             localStorage.setItem('username', res.data.data.username)
                             localStorage.setItem('adminType', res.data.data.adminType)
                             localStorage.setItem('token', res.data.data.token)
