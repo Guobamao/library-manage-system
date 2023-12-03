@@ -6,7 +6,7 @@
                 <h1>用户注册</h1>
             </el-form-item>
             <el-form-item prop="username">
-                <el-input v-model="registerForm.username" placeholder="用户名" autocomplete="off" class="el-form-item" @blur="checkValid()"></el-input>
+                <el-input v-model="registerForm.username" placeholder="用户名" autocomplete="off" class="el-form-item"></el-input>
             </el-form-item>
             <el-form-item prop="password1">
                 <el-input type="password" v-model="registerForm.password1" placeholder="密码" autocomplete="off" class="el-form-item"></el-input>
@@ -27,6 +27,7 @@
 
 <script>
 export default {
+    name: 'Register',
     data() {
         return {
             registerForm: {
@@ -67,15 +68,6 @@ export default {
                             this.$message.error(res.data.msg);
                         }
                     })
-                }
-            })
-        },
-        checkValid() {
-            this.$axios.post('/reader/check', {
-                username: this.registerForm.username
-            }).then(res => {
-                if (res.data.code == 0) {
-                    this.$message.error('用户名已存在');
                 }
             })
         }

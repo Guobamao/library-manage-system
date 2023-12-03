@@ -1,0 +1,58 @@
+{
+    "menuInfo": {
+        "title": "功能管理",
+        "name": "functionManagement",
+        "icon": "el-icon-s-fold",
+        "child": [
+            {
+                "title": "借阅管理",
+                "name": "lendManagement",
+                "icon": "el-icon-mobile",
+                "path": "/index/lendList"
+            },
+            {
+                "title": "图书管理",
+                "name": "bookManagement",
+                "icon": "el-icon-notebook-1",
+                "path": "/index/bookList"
+            },
+            {
+                "title": "读者管理",
+                "name": "readerManagement",
+                "icon": "el-icon-s-custom",
+                "path": "/index/readerList"
+            },
+            {
+                "title": "类型管理",
+                "name": "typeManagement",
+                "icon": "el-icon-menu",
+                "path": "/index/typeList"
+            },
+            {
+                "title": "公告管理",
+                "name": "noticeManagement",
+                "icon": "el-icon-message-solid",
+                "path": "/index/noticeList"
+            },
+            {
+                "title": "管理员管理",
+                "name": "adminManagement",
+                "icon": "el-icon-user-solid",
+                "path": "/index/adminList"
+            }
+        ]
+    },
+    "statistics": {
+        "title": "统计分析",
+        "name": "statistics",
+        "icon": "el-icon-s-data",
+        "child": [
+            {
+                "title": "借阅统计",
+                "name": "lendStatistics",
+                "icon": "el-icon-mobile",
+                "path": "/index/lendStatistics"
+            }
+        ]
+    }
+}
