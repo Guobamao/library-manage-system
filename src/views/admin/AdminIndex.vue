@@ -45,7 +45,7 @@
                     <el-link type="primary" @click="getAdminInfo(scope.row)">{{ scope.row.username }}</el-link>
                 </template>
             </el-table-column>
-            <el-table-column label="管理员类型" width="500">
+            <el-table-column label="管理员类型">
                 <template slot-scope="scope">
                     <el-tag v-if="scope.row.adminType == 0" type="primary">普通管理员</el-tag>
                     <el-tag v-else type="danger">高级管理员</el-tag>

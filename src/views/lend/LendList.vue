@@ -1,6 +1,6 @@
 <template>
     <el-container style="display: flex; flex-direction: column;">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="formInline">
             <el-form-item label="借书卡">
                 <el-input v-model="formInline.user" placeholder="借书卡"></el-input>
             </el-form-item>
@@ -14,7 +14,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit">查询</el-button>
+                <el-button @click="onSubmit">查询</el-button>
             </el-form-item>
         </el-form>
         <el-table :data="tableData" stripe style="width: 100%">
@@ -57,8 +57,8 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template>
-                    <el-button type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">编辑</el-button>
+                    <el-button type="primary" size="mini" plain>编辑</el-button>
+                    <el-button type="danger" size="mini" plain>删除</el-button>
                 </template>
             </el-table-column>
         </el-table>

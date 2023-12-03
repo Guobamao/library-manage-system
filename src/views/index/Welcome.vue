@@ -5,10 +5,9 @@
         <i class="el-icon-info"></i>
         <span style="margin-left: 5px;">系统公告</span>
       </div>
-      <div v-for="(item, index) in noticeData.records" :key="index" class="text item">
-        <el-table-column label="标题" width="200">
-          <el- type="primary" :underline="false" :href="item.url" target="_blank">{{item.topic}}</el->
-        </el-table-column>
+      <div v-for="(item, index) in noticeData.records" :key="index" class="text item" @click="showInfo(item)">
+        <div class="notice-topic">{{ item.topic }}</div>
+        <div class="notice-time">{{ item.createDate }}</div>
       </div>
     </el-card>
   </div>
@@ -36,6 +35,13 @@ export default {
           this.$message.error(res.data.message)
         }
       })
+    },
+    showInfo(item) {
+      this.$alert(item.content, item.topic, {
+        confirmButtonText: '确定',
+        dangerouslyUseHTMLString: true,
+        callback: () => {}
+      });
     }
   },
   mounted() {
@@ -50,10 +56,21 @@ export default {
 }
 
 .item {
-  margin-bottom: 18px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  height: 30px;
+  line-height: 30px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+.item:hover {
+  background-color: #f6f6f6;
+}
+.notice-time {
+  font-size: 12px;
+  color: #999;
 }
 
 .clearfix:before,
