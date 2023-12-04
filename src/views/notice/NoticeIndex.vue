@@ -23,8 +23,7 @@
                     <el-button type="primary" @click="addNotice" size="small">确 定</el-button>
                 </div>
             </el-dialog>
-        <el-table ref="multipleTable" :data="noticeData.records" tooltip-effect="dark" style="width: 100%"
-            @selection-change="handleSelectionChange">
+        <el-table ref="multipleTable" :data="noticeData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="公告主题" prop="topic" width="200"></el-table-column>
@@ -176,9 +175,11 @@ export default {
         }
     },
     mounted() {
-        this.currentPage = 1;
-        this.pageSize = 10;
-        this.loadData();
     },
+    created() {
+        this.currentPage = 1
+        this.pageSize = 10
+        this.loadData()
+    }
 };
 </script>

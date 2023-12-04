@@ -60,8 +60,7 @@
                 <el-button type="primary" @click="addBook" size="small">确 定</el-button>
             </div>
         </el-dialog>
-        <el-table ref="multipleTable" :data="bookData.records" tooltip-effect="dark" style="width: 100%"
-            @selection-change="handleSelectionChange">
+        <el-table ref="multipleTable" :data="bookData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="图书编号" prop="isbn" width="100"></el-table-column>
@@ -197,6 +196,14 @@ export default {
                     }
                 })
         },
+        handleSizeChange(val) {
+            this.pageSize = val
+            this.loadData()
+        },
+        handleCurrentChange(val) {
+            this.currentPage = val
+            this.loadData()
+        },
         handleSubmitClick() {
             this.addFormVisible = true;
         },
@@ -265,13 +272,11 @@ export default {
         },
     },
     mounted() {
-        this.loadData();
+    },
+    created() {
+        this.currentPage = 1
+        this.pageSize = 10
+        this.loadData()
     }
 }
 </script>
-
-<style>
-.table-header-background {
-    background: black;
-}
-</style>

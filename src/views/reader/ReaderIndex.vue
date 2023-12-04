@@ -51,8 +51,7 @@
                 <el-button type="primary" size="small" @click="addReader">确 定</el-button>
             </div>
         </el-dialog>
-        <el-table ref="multipleTable" :data="readerData.records" tooltip-effect="dark" style="width: 100%"
-            @selection-change="handleSelectionChange">
+        <el-table ref="multipleTable" :data="readerData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
@@ -181,6 +180,8 @@ export default {
         }
     },
     mounted() {
+    },
+    created() {
         this.currentPage = 1
         this.pageSize = 10
         this.loadData()

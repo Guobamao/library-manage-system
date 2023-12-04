@@ -124,11 +124,11 @@ export default {
         }
     },
     mounted() {
-        this.apiData = apiData;
     },
     created() {
         this.username = localStorage.getItem("username");
         this.adminType = localStorage.getItem("adminType");
+        this.apiData = apiData;
     }
 
 }
