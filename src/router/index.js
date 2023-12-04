@@ -47,6 +47,10 @@ const routes = [
       {
         path: 'readerList',
         component: () => import('../views/reader/ReaderIndex.vue')
+      },
+      {
+        path: 'typeList',
+        component: () => import('../views/type/TypeIndex.vue')
       }
     ]
   },
@@ -69,17 +73,38 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   if (!token && to.path !== '/login' && to.path !== '/register') {
+    // 删除localStorage的信息
+    localStorage.removeItem('token')
+    localStorage.removeItem('username')
+    localStorage.removeItem('adminType')
+    localStorage.removeItem('id')
+
+    // 跳转到登录页面
     next('/login')
-    // 弹出提示框
-    Vue.prototype.$message({
-      type: 'warning',
-      message: '请先登录'
-    })
   } else {
     axios.defaults.headers.common['Token'] = token
     next()
   }
 })
 
+// 添加axios的响应拦截器
+axios.interceptors.response.use(
+  response => {
+    return response
+  },
+  error => {
+    if (error.response && error.response.status === 401) {
+      // 删除localStorage的信息
+      localStorage.removeItem('token')
+      localStorage.removeItem('username')
+      localStorage.removeItem('adminType')
+      localStorage.removeItem('id')
+
+      // 跳转到登录页面
+      router.push('/login')
+    }
+    return Promise.reject(error)
+  }
+)
 
 export default router

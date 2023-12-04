@@ -3,10 +3,3 @@
         <el-empty description="待开发"></el-empty>
     </el-container>
 </template>
-
-<style>
-    .container-empty {
-        display: flex;
-        justify-content: center;
-    }
-</style>
