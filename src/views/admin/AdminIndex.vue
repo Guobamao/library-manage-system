@@ -39,7 +39,7 @@
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55">
             </el-table-column>
-            <el-table-column prop="id" label="ID" width="100"></el-table-column>
+            <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="用户名" width="300">
                 <template slot-scope="scope">
                     <el-link type="primary" @click="getAdminInfo(scope.row)">{{ scope.row.username }}</el-link>
@@ -126,7 +126,7 @@ export default {
                     if (res.data.code === 1) {
                         this.adminData = res.data.data
                     } else {
-                        this.$message.error(res.data.message)
+                        this.$message.error(res.data.msg)
                     }
                 })
         },
@@ -154,7 +154,7 @@ export default {
                 if (res.data.code === 1) {
                     this.adminData = res.data.data
                 } else {
-                    this.$message.error(res.data.message)
+                    this.$message.error(res.data.msg)
                 }
             })
         },
@@ -184,7 +184,7 @@ export default {
                             this.$message.success('删除成功')
                             this.loadData()
                         } else {
-                            this.$message.error(res.data.message)
+                            this.$message.error(res.data.msg)
                         }
                     })
             }).catch(() => { })

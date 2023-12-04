@@ -65,3 +65,7 @@ a {
 .container-main {
     margin-left: 200px;
 }
+.container-empty {
+    display: flex;
+    justify-content: center;
+}

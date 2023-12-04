@@ -32,7 +32,7 @@ export default {
         if (res.data.code === 1) {
           this.noticeData = res.data.data
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.msg)
         }
       })
     },

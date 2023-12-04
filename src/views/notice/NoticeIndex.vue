@@ -26,7 +26,7 @@
         <el-table ref="multipleTable" :data="noticeData.records" tooltip-effect="dark" style="width: 100%"
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="id" label="ID" width="80"></el-table-column>
+            <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="公告主题" prop="topic" width="200"></el-table-column>
             <el-table-column label="公告内容" prop="content" width="300"></el-table-column>
             <el-table-column label="发布者" prop="author" width="200"></el-table-column>
@@ -96,7 +96,7 @@ export default {
                     if (res.data.code === 1) {
                         this.noticeData = res.data.data;
                     } else {
-                        this.$message.error(res.data.message);
+                        this.$message.error(res.data.msg);
                     }
                 });
         },
@@ -111,7 +111,7 @@ export default {
                     if (res.data.code === 1) {
                         this.noticeData = res.data.data;
                     } else {
-                        this.$message.error(res.data.message);
+                        this.$message.error(res.data.msg);
                     }
                 });
         },
@@ -136,7 +136,7 @@ export default {
                         this.loadData();
                         this.addFormVisible = false;
                     } else {
-                        this.$message.error(res.data.message);
+                        this.$message.error(res.data.msg);
                     }
                 })
         },
@@ -153,7 +153,7 @@ export default {
                                 this.$message.success("删除成功");
                                 this.loadData();
                             } else {
-                                this.$message.error(res.data.message);
+                                this.$message.error(res.data.msg);
                             }
                         })
                 }).catch(() => { })
@@ -170,7 +170,7 @@ export default {
                         this.loadData();
                         this.editFormVisible = false;
                     } else {
-                        this.$message.error(res.data.message);
+                        this.$message.error(res.data.msg);
                     }
                 })
         }

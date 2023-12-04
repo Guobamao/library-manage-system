@@ -29,28 +29,32 @@ const routes = [
         component: () => import('../views/index/Welcome.vue')
       },
       {
-        path: 'lendList',
-        component: () => import('../views/lend/LendList.vue')
+        path: 'LendIndex',
+        component: () => import('../views/lend/LendIndex.vue')
       },
       {
-        path: 'bookList',
-        component: () => import('../views/book/BookList.vue')
+        path: 'BookIndex',
+        component: () => import('../views/book/BookIndex.vue')
       },
       {
-        path: 'adminList',
+        path: 'AdminIndex',
         component: () => import('../views/admin/AdminIndex.vue')
       },
       {
-        path: 'noticeList',
+        path: 'NoticeIndex',
         component: () => import('../views/notice/NoticeIndex.vue')
       },
       {
-        path: 'readerList',
+        path: 'ReaderIndex',
         component: () => import('../views/reader/ReaderIndex.vue')
       },
       {
-        path: 'typeList',
+        path: 'TypeIndex',
         component: () => import('../views/type/TypeIndex.vue')
+      },
+      {
+        path: 'StatisticsIndex',
+        component: () => import('../views/statistics/StatisticsIndex.vue')
       }
     ]
   },

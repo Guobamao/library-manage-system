@@ -6,39 +6,39 @@
         "child": [
             {
                 "title": "借阅管理",
-                "name": "lendManagement",
+                "name": "LendIndex",
                 "icon": "el-icon-mobile",
-                "path": "/index/lendList"
+                "path": "/index/LendIndex"
             },
             {
                 "title": "图书管理",
-                "name": "bookManagement",
+                "name": "BookIndex",
                 "icon": "el-icon-notebook-1",
-                "path": "/index/bookList"
+                "path": "/index/BookIndex"
             },
             {
                 "title": "读者管理",
-                "name": "readerManagement",
+                "name": "ReaderIndex",
                 "icon": "el-icon-s-custom",
-                "path": "/index/readerList"
+                "path": "/index/ReaderIndex"
             },
             {
                 "title": "类型管理",
-                "name": "typeManagement",
+                "name": "TypeIndex",
                 "icon": "el-icon-menu",
-                "path": "/index/typeList"
+                "path": "/index/TypeIndex"
             },
             {
                 "title": "公告管理",
-                "name": "noticeManagement",
+                "name": "NoticeIndex",
                 "icon": "el-icon-message-solid",
-                "path": "/index/noticeList"
+                "path": "/index/NoticeIndex"
             },
             {
                 "title": "管理员管理",
-                "name": "adminManagement",
+                "name": "AdminIndex",
                 "icon": "el-icon-user-solid",
-                "path": "/index/adminList"
+                "path": "/index/AdminIndex"
             }
         ]
     },
@@ -49,9 +49,9 @@
         "child": [
             {
                 "title": "借阅统计",
-                "name": "lendStatistics",
+                "name": "StatisticsIndex",
                 "icon": "el-icon-mobile",
-                "path": "/index/lendStatistics"
+                "path": "/index/StatisticsIndex"
             }
         ]
     }

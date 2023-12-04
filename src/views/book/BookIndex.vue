@@ -63,7 +63,7 @@
         <el-table ref="multipleTable" :data="bookData.records" tooltip-effect="dark" style="width: 100%"
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="id" label="ID" width="80"></el-table-column>
+            <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="图书编号" prop="isbn" width="100"></el-table-column>
             <el-table-column label="图书名称" prop="name" width="180"></el-table-column>
             <el-table-column label="作者" prop="author" width="100"></el-table-column>
@@ -185,7 +185,7 @@ export default {
                     if (res.data.code === 1) {
                         this.bookData = res.data.data;
                     } else {
-                        this.$message.error(res.data.message);
+                        this.$message.error(res.data.msg);
                     }
                 });
             axios.get('/type')
@@ -193,7 +193,7 @@ export default {
                     if (res.data.code === 1) {
                         this.typeData = res.data.data;
                     } else {
-                        this.$message.error(res.data.message);
+                        this.$message.error(res.data.msg);
                     }
                 })
         },
@@ -213,7 +213,7 @@ export default {
                 if (res.data.code === 1) {
                     this.bookData = res.data.data;
                 } else {
-                    this.$message.error(res.data.message);
+                    this.$message.error(res.data.msg);
                 }
             })
         },
@@ -225,7 +225,7 @@ export default {
                         this.addFormVisible = false;
                         this.loadData();
                     } else {
-                        this.$message.error(res.data.message);
+                        this.$message.error(res.data.msg);
                     }
                 })
         },
@@ -242,7 +242,7 @@ export default {
                         this.editFormVisible = false;
                         this.loadData();
                     } else {
-                        this.$message.error(res.data.message);
+                        this.$message.error(res.data.msg);
                     }
                 })
         },
@@ -258,7 +258,7 @@ export default {
                             this.$message.success("删除成功");
                             this.loadData();
                         } else {
-                            this.$message.error(res.data.message);
+                            this.$message.error(res.data.msg);
                         }
                     })
             }).catch(() => {});
