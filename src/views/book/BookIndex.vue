@@ -9,7 +9,7 @@
             </el-form-item>
             <el-form-item label="图书分类">
                 <el-select v-model="searchForm.typeId" placeholder="图书分类" clearable>
-                    <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    <el-option v-for="item in typeData.records" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
@@ -187,7 +187,7 @@ export default {
                         this.$message.error(res.data.msg);
                     }
                 });
-            axios.get('/type')
+            axios.get('/type/page')
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.typeData = res.data.data;
