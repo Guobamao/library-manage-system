@@ -17,6 +17,10 @@
 }
 
 body {
+    margin: 0;
+    padding: 0;
+}
+.layui-container {
     background-image: url("../assets/bg-images-1.png");
     background-position-y: center;
     background-position-x: center;
@@ -24,6 +28,8 @@ body {
     background-attachment: fixed;
     background-size: cover;
     margin: 0;
+    padding: 0;
+    height: 100vh;
 }
 
 #app {
@@ -57,7 +63,4 @@ body {
     border-radius: 18px;
     padding: 14px 20px;
     box-shadow: 0 0 8px #eeeeee;
-}
-.el-form-item {
-    width: 100%;
 }

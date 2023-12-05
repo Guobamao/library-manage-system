@@ -6,24 +6,23 @@
                 <h1>图书管理系统</h1>
             </el-form-item>
             <el-form-item prop="username">
-                <el-input v-model="loginForm.username" placeholder="用户名" autocomplete="off" class="el-form-item"></el-input>
+                <el-input v-model="loginForm.username" placeholder="用户名" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input type="password" v-model="loginForm.password" placeholder="密码" autocomplete="off" class="el-form-item"></el-input>
+                <el-input type="password" v-model="loginForm.password" placeholder="密码" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item prop="type">
-                <el-select v-model="loginForm.type" placeholder="请选择用户类型" class="el-form-item">
+                <el-select v-model="loginForm.type" placeholder="请选择用户类型" style="width: 100%;">
                 <el-option label="管理员" value="1"></el-option>
                 <el-option label="读者" value="2"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('loginForm')" class="el-form-item">登录</el-button>
+                <el-button type="primary" @click="submitForm('loginForm')" style="width: 100%;">登录</el-button>
             </el-form-item>
             <el-form-item>
-                <el-button type="success" @click="$router.push('/register')" class="el-form-item">注册</el-button>
+                <el-button type="success" @click="$router.push('/register')" style="width: 100%;">注册</el-button>
             </el-form-item>
-            
             </el-form>
         </div>
     </div>
@@ -89,6 +88,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @import "../../styles/login.css";
 </style>

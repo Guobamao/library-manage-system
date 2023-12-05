@@ -6,19 +6,19 @@
                 <h1>用户注册</h1>
             </el-form-item>
             <el-form-item prop="username">
-                <el-input v-model="registerForm.username" placeholder="用户名" autocomplete="off" class="el-form-item"></el-input>
+                <el-input v-model="registerForm.username" placeholder="用户名" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item prop="password1">
-                <el-input type="password" v-model="registerForm.password1" placeholder="密码" autocomplete="off" class="el-form-item"></el-input>
+                <el-input type="password" v-model="registerForm.password1" placeholder="密码" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item prop="password2">
-                <el-input type="password" v-model="registerForm.password2" placeholder="确认密码" autocomplete="off" class="el-form-item"></el-input>
+                <el-input type="password" v-model="registerForm.password2" placeholder="确认密码" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="success" @click="register()" class="el-form-item">注册</el-button>
+                <el-button type="success" @click="register()" style="width: 100%;">注册</el-button>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="$router.push('/login')" class="el-form-item">返回登录</el-button>
+                <el-button type="primary" @click="$router.push('/login')" style="width: 100%;">返回登录</el-button>
             </el-form-item>
             </el-form>
         </div>
@@ -75,6 +75,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @import "../../styles/login.css";
 </style>

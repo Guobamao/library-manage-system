@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-container >
+        <el-container>
             <!-- 页面顶部 -->
             <el-header>
                 <el-row>
@@ -20,7 +20,7 @@
             <el-container class="container-body">
                 <!-- 侧边菜单栏 -->
                 <el-aside style="width: 200px;">
-                    <el-menu background-color="#28333e" text-color="#fff" active-text-color="#ffd04b">
+                    <el-menu background-color="#28333e" text-color="#fff" active-text-color="#ffd04b" :default-active="currentTabIndex" router>
                         <!-- 遍历父级菜单 -->
                         <el-submenu v-for="item in apiData" :key="item.name" :index="item.name">
                             <template slot="title">
@@ -28,7 +28,8 @@
                                 <span>{{ item.title }}</span>
                             </template>
                             <!-- 遍历子级菜单 -->
-                            <el-menu-item v-for="child in item.child" :key="child.name" :index="child.name" @click="handleMenuClick(child)">
+                            <el-menu-item v-for="child in item.child" :key="child.name" :index="child.name"
+                                @click="handleMenuClick(child)">
                                 <i :class="child.icon"></i>
                                 <span>{{ child.title }}</span>
                             </el-menu-item>
@@ -39,7 +40,8 @@
                 <el-main class="container-main">
                     <!-- 标签栏 -->
                     <el-tabs v-model="currentTabIndex" @tab-remove="removeTab" @tab-click="handleTabClick">
-                        <el-tab-pane v-for="item in Tabs" :key="item.index" :label="item.tagName" :closable="item.isClosable" :name="item.index"></el-tab-pane>
+                        <el-tab-pane v-for="item in tabs" :key="item.index" :label="item.tabName"
+                            :closable="item.isClosable" :name="item.index"></el-tab-pane>
                     </el-tabs>
                     <!-- 路由容器 -->
                     <el-container>
@@ -57,12 +59,11 @@ export default {
     data() {
         return {
             apiData: [], // 侧边菜单栏数据
-            tabIndex: 1, // 标签页索引
-            currentTabIndex: "1", // 当前激活的标签页
-            Tabs: [
+            currentTabIndex: "HomePage", // 当前激活的标签页
+            tabs: [
                 {
-                    index: "1",
-                    tagName: "首页",
+                    index: "HomePage",
+                    tabName: "首页",
                     path: "/index",
                     isClosable: false
                 }
@@ -76,50 +77,48 @@ export default {
                 if (res.data.code === 1) {
                     this.$message.success("退出登录成功");
                     this.$router.push("/login");
+                    localStorage.clear();
                 }
             });
         },
-        addTab(item) {
+        addTab(menuItem) {
             // 判断标签页是否已经存在
             // 判断标签名 是否等于 菜单项的标题
-            const tab = this.Tabs.find(tab => tab.tagName === item.title);
+            const tab = this.tabs.find(tab => tab.index === menuItem.name);
             if (tab) { // 标签页已存在
-                this.currentTabIndex = tab.index;
+                this.currentTabIndex = tab.index; // 将当前激活的标签页设为点击的菜单项
             } else { // 标签页不存在
-                ++this.tabIndex;
-                this.currentTabIndex = this.tabIndex.toString(); // 设置当前激活的标签页
-                this.Tabs.push({
+                this.currentTabIndex = menuItem.name; // 设置当前激活的标签页
+                this.tabs.push({
                     index: this.currentTabIndex,
-                    tagName: item.title,
-                    path: item.path,
+                    tabName: menuItem.title,
+                    path: menuItem.path,
                     isClosable: true
                 });
             }
         },
-        removeTab(targetName) {
-            const tabs = this.Tabs;
-            const activeName = this.currentTabIndex;
-            /* 输出类型 */
-            if (activeName === targetName) {
-                tabs.forEach((tab, index) => {
-                    if (tab.index === targetName) {
-                        const nextTab = tabs[index + 1] || tabs[index - 1];
-                        if (nextTab) {
+        removeTab(tabName) {
+            // 判断当前激活的标签是否为传入的标签
+            if (this.currentTabIndex === tabName) {
+                this.tabs.forEach((tab, index) => {
+                    if (tab.index === tabName) { // 遍历判断是否为当前标签
+                        // 获取下一个Tabex)
+                        const nextTab = this.tabs[index + 1] || this.tabs[index - 1]; // 如果该元素有下一个元素，则为下一个元素。没有则为上一个元素
+                        if (nextTab) { // 如果元素存在
                             this.currentTabIndex = nextTab.index;
-                            this.$router.push(nextTab.path)
+                            this.$router.push(nextTab.path); // 跳转
                         }
                     }
                 })
             }
-            this.Tabs = tabs.filter(tab => tab.index !== targetName);
+            this.tabs = this.tabs.filter(tab => tab.index !== tabName);
         },
         handleMenuClick(item) {
             this.addTab(item);
             this.$router.push(item.path);
         },
-        handleTabClick(tag) {
-            console.log(tag);
-            const path = this.Tabs.find(item => item.index === tag.name).path;
+        handleTabClick(tab) {
+            const path = this.tabs.find(item => item.index === tab.name).path;
             this.$router.push(path);
         }
     },
@@ -130,7 +129,6 @@ export default {
         this.adminType = localStorage.getItem("adminType");
         this.apiData = apiData;
     }
-
 }
 </script>
 
