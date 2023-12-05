@@ -78,10 +78,7 @@ router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   if (!token && to.path !== '/login' && to.path !== '/register') {
     // 删除localStorage的信息
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
-    localStorage.removeItem('adminType')
-    localStorage.removeItem('id')
+    localStorage.clear()
 
     // 跳转到登录页面
     next('/login')
@@ -99,10 +96,7 @@ axios.interceptors.response.use(
   error => {
     if (error.response && error.response.status === 401) {
       // 删除localStorage的信息
-      localStorage.removeItem('token')
-      localStorage.removeItem('username')
-      localStorage.removeItem('adminType')
-      localStorage.removeItem('id')
+      localStorage.clear()
 
       // 跳转到登录页面
       router.push('/login')

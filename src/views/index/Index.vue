@@ -20,7 +20,7 @@
             <el-container class="container-body">
                 <!-- 侧边菜单栏 -->
                 <el-aside style="width: 200px;">
-                    <el-menu background-color="#28333e" text-color="#fff" active-text-color="#ffd04b" :default-active="currentTabIndex" router>
+                    <el-menu background-color="#28333e" text-color="#fff" active-text-color="#ffd04b" :default-active="currentTabIndex">
                         <!-- 遍历父级菜单 -->
                         <el-submenu v-for="item in apiData" :key="item.name" :index="item.name">
                             <template slot="title">
