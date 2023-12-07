@@ -1,134 +1,166 @@
 <template>
     <el-container style="display: flex; flex-direction: column;">
-        <el-form :inline="true" :model="formInline">
+        <el-form :model="searchForm" size="small" :inline="true">
             <el-form-item label="借书卡">
-                <el-input v-model="formInline.user" placeholder="借书卡"></el-input>
+                <el-input v-model="searchForm.readerNumber" placeholder="借书卡"></el-input>
             </el-form-item>
             <el-form-item label="图书名称">
-                <el-input v-model="formInline.bookName" placeholder="图书名称"></el-input>
+                <el-input v-model="searchForm.bookName" placeholder="图书名称"></el-input>
             </el-form-item>
-            <el-form-item label="活动区域">
-                <el-select v-model="formInline.region" placeholder="活动区域">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
+            <el-form-item label="归还状态">
+                <el-select v-model="searchForm.backType" placeholder="归还状态" clearable>
+                    <el-option label="正常还书" value="0"></el-option>
+                    <el-option label="延迟还书" value="1"></el-option>
+                    <el-option label="破损还书" value="2"></el-option>
+                    <el-option label="丢失" value="3"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="图书状态">
+                <el-select v-model="searchForm.status" placeholder="图书状态" clearable>
+                    <el-option label="在馆" value="0"></el-option>
+                    <el-option label="已借出" value="1"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button @click="onSubmit">查询</el-button>
+                <el-button @click="search">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="tableData" stripe style="width: 100%">
+        <el-table ref="multipleTable" :data="lendData.records" tooltip-effect="dark" style="width: 100%">
+            <el-table-column type="selection" width="55"> </el-table-column>
+            <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="图书名称" width="180">
                 <template slot-scope="scope">
-                    <el-link type="primary" @click="dialogBookVisible = true">{{ scope.row.bookName }}</el-link>
-                    <el-dialog title="借阅时间线" :visible.sync="dialogBookVisible" width="30%">
-                        <el-timeline :reverse="reverse">
-                            <el-timeline-item v-for="(activity, index) in activities" :key="index"
-                                :timestamp="activity.timestamp">
-                                {{ activity.content }}
+                    <el-link type="primary" :underline="false" @click="showBookTimeline(scope.row)">
+                        {{ scope.row.book.name }}
+                    </el-link>
+                    <el-dialog title="借阅时间线" :visible.sync="bookDetailVisible" width="30%">
+                        <el-timeline :reverse="true">
+                            <el-timeline-item v-for="(item, index) in timelineData" :key="index" :timestamp="item.timestamp" placement="top">
+                                <p v-if="item.returned">
+                                    <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
+                                        {{ scope.row.book.name }}
+                                    </el-link>
+                                    已归还
+                                </p>
+                                <p v-else>
+                                    <el-link type="danger" :underline="false" style="vertical-align: baseline !important;">
+                                        {{ item.realName }}
+                                    </el-link>
+                                    借阅了
+                                    <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
+                                        {{ scope.row.book.name }}
+                                    </el-link>
+                                </p>
                             </el-timeline-item>
                         </el-timeline>
                     </el-dialog>
                 </template>
             </el-table-column>
-            <el-table-column prop="cardId" label="借书卡" width="180">
-            </el-table-column>
-            <el-table-column label="借阅人" width="180">
+            <el-table-column label="借书卡" prop="reader.readerNumber" width="150"></el-table-column>
+            <el-table-column label="借阅人" prop="reader.realName" width="100">
                 <template slot-scope="scope">
-                    <el-link type="primary" @click="dialogUserVisible = true">{{ scope.row.readerName }}</el-link>
-                    <el-dialog title="借阅时间线" :visible.sync="dialogUserVisible" width="30%">
-                        <el-timeline :reverse="reverse">
-                            <el-timeline-item v-for="(activity, index) in activities" :key="index"
-                                :timestamp="activity.timestamp">
-                                {{ activity.content }}
+                    <el-link type="primary" :underline="false" @click="showReaderHistory(scope.row)">
+                    {{ scope.row.reader.realName }}</el-link>
+                    <el-dialog title="借阅时间线" :visible.sync="readerHistoryVisible" width="30%">
+                        <el-timeline :reverse="true">
+                            <el-timeline-item v-for="(item, index) in readerHistoryData" :key="index" :timestamp="item.timestamp" placement="top">
+                                <p>
+                                    <el-link type="danger" :underline="false" style="vertical-align: baseline !important;">
+                                        {{ item.realName }}
+                                    </el-link>
+                                    借阅了
+                                    <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
+                                        {{ scope.row.book.name }}
+                                    </el-link>
+                                </p>
                             </el-timeline-item>
                         </el-timeline>
                     </el-dialog>
                 </template>
             </el-table-column>
-            <el-table-column prop="lendTime" label="借阅时间" width="180">
-            </el-table-column>
-            <el-table-column prop="returnTime" label="还书时间" width="180">
-            </el-table-column>
-            <el-table-column label="当前状态" width="180">
+            <el-table-column label="借阅时间" prop="lendDate" width="200"></el-table-column>
+            <el-table-column label="还书时间" prop="backDate" width="200"></el-table-column>
+            <el-table-column label="归还状态" prop="backType" width="100">
                 <template slot-scope="scope">
-                    <el-tag :type="status[scope.row.status]">{{ status_text[scope.row.status] }}</el-tag>
+                    <!-- 如果status没有值则显示在借中 -->
+                    <el-tag :type="status[scope.row.backType] || 'info'">{{ status_text[scope.row.backType] || '在借中'
+                    }}</el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="操作">
-                <template>
-                    <el-button type="primary" size="mini" plain>编辑</el-button>
-                    <el-button type="danger" size="mini" plain>删除</el-button>
+                <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="deleteById(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
 
         <div>
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="100"
-                layout="total, sizes, prev, pager, next, jumper" :total="400">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+                :page-sizes="[10, 15, 20, 30]" :page-size="10" layout="total, sizes, prev, pager, next, jumper"
+                :total="lendData.total">
             </el-pagination>
         </div>
     </el-container>
 </template>
   
 <script>
+import axios from 'axios';
 export default {
     data() {
         return {
-            tableData: [{
-                bookName: '三国演义',
-                cardId: '2016010101',
-                readerName: '张三',
-                lendTime: '2016-05-02',
-                returnTime: '2016-05-02',
-                status: 0 // 0: 已借阅, 1: 已归还 2: 已超期 3: 已丢失
-            }, {
-                bookName: '西游记',
-                cardId: '2016010102',
-                readerName: '李四',
-                lendTime: '2016-05-02',
-                returnTime: '2016-05-02',
-                status: 1
-            }, {
-                bookName: '水浒传',
-                cardId: '2016010103',
-                readerName: '王五',
-                lendTime: '2016-05-02',
-                returnTime: '2016-05-02',
-                status: 2
-            }, {
-                bookName: '红楼梦',
-                cardId: '2016010104',
-                readerName: '赵六',
-                lendTime: '2016-05-02',
-                returnTime: '2016-05-02',
-                status: 3
-            }],
-            formInline: {
-                user: '',
+            searchForm: {
+                readerNumber: '',
                 bookName: '',
-                region: ''
+                backType: '',
+                status: ''
             },
-            status: ['', 'success', 'warning', 'danger'],
+            lendData: [],
+            status: ['primary', 'success', 'warning', 'danger'],
             status_text: ['已借阅', '已归还', '已超期', '已丢失'],
-            dialogBookVisible: false,
-            dialogUserVisible: false,
-            reverse: false,
-            activities: [{
-                content: '活动按期开始',
-                timestamp: '2018-04-15'
-            }, {
-                content: '通过审核',
-                timestamp: '2018-04-13'
-            }, {
-                content: '创建成功',
-                timestamp: '2018-04-11'
-            }]
+            bookDetailVisible: false, // 图书借阅时间线弹窗
+            readerHistoryVisible: false, // 读者借阅历史弹窗
+            timelineData: [], // 时间线数据
+            readerHistoryData: [], // 读者借阅历史数据
         }
     },
     methods: {
-         handleSizeChange(val) { 
+        loadData() {
+            axios
+                .get("/lend/page", {
+                    params: {
+                        page: this.currentPage,
+                        pageSize: this.pageSize,
+                    },
+                })
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.lendData = res.data.data;
+                    } else {
+                        this.$message.error(res.data.msg);
+                    }
+                });
+        },
+        search() {
+            axios
+                .get("/lend/page", {
+                    params: {
+                        page: this.currentPage,
+                        pageSize: this.pageSize,
+                        readerNumber: this.searchForm.readerNumber,
+                        bookName: this.searchForm.bookName,
+                        backType: this.searchForm.backType,
+                        status: this.searchForm.status
+                    },
+                })
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.lendData = res.data.data;
+                    } else {
+                        this.$message.error(res.data.msg);
+                    }
+                });
+        },
+        handleSizeChange(val) {
             this.pageSize = val
             this.loadData()
         },
@@ -136,6 +168,52 @@ export default {
             this.currentPage = val
             this.loadData()
         },
+        showBookTimeline(item) {
+            axios.get('/lend/timeline', {
+                params: {
+                    bookId: item.bookId
+                }
+            }).then(res => {
+                if (res.data.code === 1) {
+                    this.timelineData = res.data.data
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+            this.bookDetailVisible = true
+        },
+        showReaderHistory(item) {
+            axios.get('/lend/history', {
+                params: {
+                    readerId: item.readerId
+                }
+            }).then(res => {
+                if (res.data.code === 1) {
+                    this.readerHistoryData = res.data.data
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            })
+            this.readerHistoryVisible = true
+        },
+        deleteById(item) {
+            this.$confirm('此操作将永久删除该借阅记录, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                axios.delete('/lend/' + item.id).then(res => {
+                    if (res.data.code === 1) {
+                        this.$message.success("删除成功")
+                        this.loadData()
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                })
+            }).catch(() => {
+                this.$message.info('已取消删除')
+            })
+        }
     },
     mounted() {
     },

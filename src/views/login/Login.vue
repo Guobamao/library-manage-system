@@ -2,27 +2,18 @@
     <div class="layui-container">
         <div class="admin-login-background">
             <el-form class="login-form" ref="loginForm" :model="loginForm" :rules="loginFormRules">
-            <el-form-item class="logo-title">
-                <h1>图书管理系统</h1>
-            </el-form-item>
-            <el-form-item prop="username">
-                <el-input v-model="loginForm.username" placeholder="用户名" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item prop="password">
-                <el-input type="password" v-model="loginForm.password" placeholder="密码" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item prop="type">
-                <el-select v-model="loginForm.type" placeholder="请选择用户类型" style="width: 100%;">
-                <el-option label="管理员" value="1"></el-option>
-                <el-option label="读者" value="2"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="submitForm('loginForm')" style="width: 100%;">登录</el-button>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="success" @click="$router.push('/register')" style="width: 100%;">注册</el-button>
-            </el-form-item>
+                <el-form-item class="logo-title">
+                    <h1>图书管理系统</h1>
+                </el-form-item>
+                <el-form-item prop="username">
+                    <el-input v-model="loginForm.username" placeholder="用户名" autocomplete="on"></el-input>
+                </el-form-item>
+                <el-form-item prop="password">
+                    <el-input type="password" v-model="loginForm.password" placeholder="密码" autocomplete="on"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('loginForm')" style="width: 100%;">登录</el-button>
+                </el-form-item>
             </el-form>
         </div>
     </div>
@@ -30,13 +21,11 @@
 
 <script>
 export default {
-    name: 'Login',
     data() {
         return {
             loginForm: {
                 username: '',
                 password: '',
-                type: '',
             },
             loginFormRules: {
                 username: [
@@ -44,9 +33,6 @@ export default {
                 ],
                 password: [
                     { required: true, message: '请输入密码', trigger: 'blur' }
-                ],
-                type: [
-                    { required: true, message: '请选择用户类型', trigger: 'change' }
                 ]
             }
         }
@@ -56,15 +42,13 @@ export default {
             // 为表单绑定验证功能
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    this.$axios.post(this.loginForm.type === '1' ? '/admin/login' : '/reader/login',{
+                    this.$axios.post('/admin/login', {
                         username: this.loginForm.username,
                         password: this.loginForm.password,
                     }).then(res => {
                         if (res.data.code === 1) {
                             this.$message.success('登录成功')
-                            localStorage.setItem('id', res.data.data.id)
                             localStorage.setItem('username', res.data.data.username)
-                            localStorage.setItem('adminType', res.data.data.adminType)
                             localStorage.setItem('token', res.data.data.token)
                             this.$router.replace({
                                 path: '/'
@@ -86,7 +70,7 @@ export default {
         }
     }
 }
-</script>
+</script>   
 
 <style scoped>
 @import "../../styles/login.css";

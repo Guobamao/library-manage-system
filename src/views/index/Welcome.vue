@@ -6,8 +6,8 @@
         <span style="margin-left: 5px;">系统公告</span>
       </div>
       <div v-for="(item, index) in noticeData.records" :key="index" class="text item" @click="showInfo(item)">
-        <div class="notice-topic">{{ item.topic }}</div>
-        <div class="notice-time">{{ item.createDate }}</div>
+        <div class="notice-title">{{ item.title }}</div>
+        <div class="notice-time">{{ item.createTime }}</div>
       </div>
     </el-card>
   </div>
@@ -37,11 +37,11 @@ export default {
       })
     },
     showInfo(item) {
-      this.$alert(item.content, item.topic, {
+      this.$alert(item.content, "公告内容", {
         confirmButtonText: '确定',
         dangerouslyUseHTMLString: true,
-        callback: () => {}
-      });
+        callback: () => {}  
+      })
     }
   },
   mounted() {
@@ -61,6 +61,7 @@ export default {
   justify-content: space-between;
   height: 30px;
   line-height: 30px;
+  border-bottom: 1px solid #e4e4e4;
   padding: 7px 16px;
   cursor: pointer;
   transition: all .2s ease-in-out;

@@ -2,7 +2,7 @@
     <el-container style="display: flex; flex-direction: column">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="公告主题">
-                <el-input v-model="searchForm.topic" placeholder="公告主题"></el-input>
+                <el-input v-model="searchForm.title" placeholder="公告主题"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button @click="search">查询</el-button>
@@ -10,26 +10,36 @@
             <el-button type="primary" @click="handleSubmitClick">发布公告</el-button>
         </el-form>
         <el-dialog title="发布公告" :visible.sync="addFormVisible" width="600px">
-                <el-form :model="addForm">
-                    <el-form-item label="公告主题" label-width="15%" required>
-                        <el-input v-model="addForm.topic" autocomplete="off" placeholder="请输入公告主题"></el-input>
-                    </el-form-item>
-                    <el-form-item label="公告内容" label-width="15%" required>
-                        <el-input type="textarea" v-model="addForm.content"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="addFormVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="addNotice" size="small">确 定</el-button>
-                </div>
-            </el-dialog>
+            <el-form :model="addForm">
+                <el-form-item label="公告主题" label-width="15%" required>
+                    <el-input v-model="addForm.title" autocomplete="off" placeholder="请输入公告主题"></el-input>
+                </el-form-item>
+                <el-form-item label="公告内容" label-width="15%" required>
+                    <el-input type="textarea" v-model="addForm.content"></el-input>
+                </el-form-item>
+                <el-form-item label="过期时间" label-width="15%" required>
+                    <el-date-picker v-model="addForm.expireTime" type="datetime" placeholder="选择日期时间"
+                        default-time="12:00:00" value-format="yyyy-MM-dd HH:mm:ss" style="width: calc(600px - 26%);">
+                    </el-date-picker>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="addFormVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="addNotice" size="small">确 定</el-button>
+            </div>
+        </el-dialog>
         <el-table ref="multipleTable" :data="noticeData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
-            <el-table-column label="公告主题" prop="topic" width="200"></el-table-column>
-            <el-table-column label="公告内容" prop="content" width="300"></el-table-column>
-            <el-table-column label="发布者" prop="author" width="200"></el-table-column>
-            <el-table-column label="发布时间" prop="createDate" width="200"></el-table-column>
+            <el-table-column label="公告主题" width="150" show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                    <el-link type="primary" :underline="false" @click="showInfo(scope.row)">{{ scope.row.title }}</el-link>
+                </template>
+            </el-table-column>
+            <el-table-column label="公告内容" prop="content" width="250" show-overflow-tooltip="true"></el-table-column>
+            <el-table-column label="发布者" prop="createUserName" width="100"></el-table-column>
+            <el-table-column label="发布时间" prop="createTime" width="200"></el-table-column>
+            <el-table-column label="过期时间" prop="expireTime" width="200"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="primary" plain size="mini" @click="showEdit(scope.row)">编辑</el-button>
@@ -37,10 +47,16 @@
                     <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="600px">
                         <el-form :model="editForm">
                             <el-form-item label="公告标题" label-width="20%" required>
-                                <el-input v-model="editForm.topic" autocomplete="off" placeholder="请输入公告标题"></el-input>
+                                <el-input v-model="editForm.title" autocomplete="off" placeholder="请输入公告标题"></el-input>
                             </el-form-item>
                             <el-form-item label="公告内容" label-width="20%" required>
                                 <el-input type="textarea" v-model="editForm.content"></el-input>
+                            </el-form-item>
+                            <el-form-item label="过期时间" label-width="20%" required>
+                                <el-date-picker v-model="editForm.expireTime" type="datetime" placeholder="选择日期时间"
+                                    default-time="12:00:00" value-format="yyyy-MM-dd HH:mm:ss"
+                                    style="width: calc(600px - 34%);">
+                                </el-date-picker>
                             </el-form-item>
                         </el-form>
                         <div slot="footer" class="dialog-footer">
@@ -67,18 +83,21 @@ export default {
     data() {
         return {
             searchForm: {
-                topic: "",
+                title: "",
             },
             noticeData: [],
             addFormVisible: false,
             addForm: {
-                topic: "",
+                title: "",
                 content: "",
+                expireTime: "",
             },
             editFormVisible: false,
             editForm: {
-                topic: "",
+                title: "",
                 content: "",
+                createTime: "",
+                expireTime: ""
             },
         };
     },
@@ -103,7 +122,7 @@ export default {
             axios
                 .get("/notice/page", {
                     params: {
-                        topic: this.searchForm.topic,
+                        title: this.searchForm.title,
                     },
                 })
                 .then((res) => {
@@ -123,7 +142,7 @@ export default {
             this.loadData();
         },
         handleSubmitClick() {
-            this.addForm.topic = "";
+            this.addForm.title = "";
             this.addForm.content = "";
             this.addFormVisible = true;
         },
@@ -172,6 +191,13 @@ export default {
                         this.$message.error(res.data.msg);
                     }
                 })
+        },
+        showInfo(row) {
+            this.$alert(row.content, "公告内容", {
+                confirmButtonText: "确定",
+                dangerouslyUseHTMLString: true,
+                callback: () => { },
+            });
         }
     },
     mounted() {
