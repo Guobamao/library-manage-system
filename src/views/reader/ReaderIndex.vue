@@ -2,91 +2,65 @@
     <el-container style="display: flex; flex-direction: column; ">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="借书卡号">
-                <el-input v-model="searchForm.readerNumber" placeholder="借书卡号"></el-input>
+                <el-input v-model="searchForm.cardNumber" placeholder="借书卡号"></el-input>
             </el-form-item>
-            <el-form-item label="用户名">
-                <el-input v-model="searchForm.username" placeholder="用户名"></el-input>
+            <el-form-item label="姓名">
+                <el-input v-model="searchForm.name" placeholder="姓名"></el-input>
             </el-form-item>
             <el-form-item label="手机号">
-                <el-input v-model="searchForm.tel" placeholder="手机号"></el-input>
+                <el-input v-model="searchForm.phone" placeholder="手机号"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button @click="search">查询</el-button>
             </el-form-item>
-            <el-button type="primary" @click="handleSubmitClick">添加</el-button>
         </el-form>
-        <el-dialog title="添加读者" :visible.sync="addFormVisible" width="600px">
-            <el-form :model="addForm">
-                <el-form-item label="用户名" label-width="15%" required>
-                    <el-input v-model="addForm.username" autocomplete="off" placeholder="请输入用户名"></el-input>
-                </el-form-item>
-                <el-form-item label="密码" label-width="15%" required>
-                    <el-input v-model="addForm.password" autocomplete="off" placeholder="请输入密码"></el-input>
-                </el-form-item>
-                <el-form-item label="真实姓名" label-width="15%" required>
-                    <el-input v-model="addForm.realName" autocomplete="off" placeholder="请输入真实姓名"></el-input>
-                </el-form-item>
-                <el-form-item label="性别" label-width="15%" required>
-                    <el-select v-model="addForm.sex" placeholder="请选择性别" style="width: calc(600px - 26%);">
-                        <el-option label="男" value=0></el-option>
-                        <el-option label="女" value=1></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="生日" label-width="15%" required>
-                    <el-date-picker v-model="addForm.birthday" type="date" placeholder="选择日期"
-                        value-format="yyyy-MM-dd"
-                        style="width: calc(600px - 26%);">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="地址" label-width="15%" required>
-                    <el-input v-model="addForm.address" autocomplete="off" placeholder="请输入地址"></el-input>
-                </el-form-item>
-                <el-form-item label="联系方式" label-width="15%" required>
-                    <el-input v-model="addForm.tel" autocomplete="off" placeholder="请输入联系方式"></el-input>
-                </el-form-item>
-                <el-form-item label="邮箱" label-width="15%" required>
-                    <el-input v-model="addForm.email" autocomplete="off" placeholder="请输入电子邮箱"></el-input>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="addFormVisible = false" size="small">取 消</el-button>
-                <el-button type="primary" size="small" @click="addReader">确 定</el-button>
-            </div>
-        </el-dialog>
         <el-table ref="multipleTable" :data="readerData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
-            <el-table-column label="借书卡号" prop="readerNumber" width="130"></el-table-column>
-            <el-table-column label="用户名" prop="username" width="120"></el-table-column>
-            <el-table-column label="真实姓名" prop="realName" width="100"></el-table-column>
-            <el-table-column label="性别" prop="sex" width="70"></el-table-column>
-            <el-table-column label="联系方式" prop="tel" width="150"></el-table-column>
-            <el-table-column label="注册时间" prop="registerDate" width="200"></el-table-column>
-            <el-table-column label="邮箱" prop="email" width="200"></el-table-column>
+            <el-table-column label="借书卡号" prop="cardNumber" width="130">
+                <template slot-scope="scope">
+                    {{ scope.row.cardNumber ? scope.row.cardNumber : '暂无' }}
+                </template>
+            </el-table-column>
+            <el-table-column label="姓名" width="120">
+                <template slot-scope="scope">
+                    <el-link type="primary" :underline="false" @click="getReaderInfo(scope.row)">{{ scope.row.name
+                    }}</el-link>
+                </template>
+            </el-table-column>
+            <el-table-column label="性别" width="70">
+                <template slot-scope="scope">
+                    {{ scope.row.gender === 0 ? '男' : '女' }}
+                </template>
+            </el-table-column>
+            <el-table-column label="联系方式" prop="phone" width="150"></el-table-column>
+            <el-table-column label="邮箱" prop="email" width="200">
+                <template slot-scope="scope">
+                    {{ scope.row.email ? scope.row.email : '无' }}
+                </template>
+            </el-table-column>
+            <el-table-column label="注册时间" prop="createTime" width="200"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" plain @click="showEdit(scope.row)">编辑</el-button>
                     <el-button type="danger" size="mini" plain @click="deleteById(scope.row)">删除</el-button>
                     <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="600px">
                         <el-form :model="editForm">
-                            <el-form-item label="借书卡号" label-width="20%" required>
-                                <el-input v-model="editForm.readerNumber" autocomplete="off" placeholder="请输入借书卡号"></el-input>
+                            <el-form-item label="借书卡号" label-width="20%">
+                                <el-input v-model="editForm.cardNumber" autocomplete="off" placeholder="请输入借书卡号"></el-input>
                             </el-form-item>
-                            <el-form-item label="用户名" label-width="20%" required>
-                                <el-input v-model="editForm.username" autocomplete="off" placeholder="请输入用户名"></el-input>
-                            </el-form-item>
-                            <el-form-item label="真实姓名" label-width="20%" required>
-                                <el-input v-model="editForm.realName" autocomplete="off" placeholder="请输入真实姓名"></el-input>
+                            <el-form-item label="姓名" label-width="20%" required>
+                                <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
                             </el-form-item>
                             <el-form-item label="性别" label-width="20%" required>
-                                <el-select v-model="editForm.sex" placeholder="请选择性别" style="width: calc(600px - 34%);">
+                                <el-select v-model="editForm.gender" placeholder="请选择性别" style="width: calc(600px - 34%);">
                                     <el-option label="男" value=0></el-option>
                                     <el-option label="女" value=1></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="联系方式" label-width="20%" required>
-                                <el-input v-model="editForm.tel" autocomplete="off" placeholder="请输入联系方式"></el-input>
+                                <el-input v-model="editForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
                             </el-form-item>
                             <el-form-item label="邮箱" label-width="20%" required>
                                 <el-input v-model="editForm.email" autocomplete="off" placeholder="请输入电子邮箱"></el-input>
@@ -96,16 +70,7 @@
                             </el-form-item>
                             <el-form-item label="生日" label-width="20%" required>
                                 <el-date-picker v-model="editForm.birthday" type="date" placeholder="选择日期"
-                                    value-format="yyyy-MM-dd"
-                                    style="width: calc(600px - 34%);">
-                                </el-date-picker>
-                            </el-form-item>
-                            <!-- 注册时间 -->
-                            <el-form-item label="注册时间" label-width="20%" required>
-                                <el-date-picker v-model="editForm.registerDate" type="datetime" placeholder="选择时间"
-                                value-format="yyyy-MM-dd HH:mm:ss"
-                                    style="width: calc(600px - 34%);">
-                                </el-date-picker>
+                                    value-format="yyyy-MM-dd" style="width: calc(600px - 34%);"></el-date-picker>
                             </el-form-item>
                         </el-form>
                         <div slot="footer" class="dialog-footer">
@@ -132,35 +97,31 @@ export default {
     data() {
         return {
             searchForm: {
-                username: '',
-                tel: '',
-                readerNumber: ''
+                name: '',
+                phone: '',
+                cardNumber: ''
             },
             readerData: [],
             addFormVisible: false,
             addForm: {
-                username: '',
+                name: '',
                 password: '',
-                realName: '',
-                sex: '',
+                gender: '',
                 birthday: '',
                 address: '',
-                tel: '',
-                email: '',
+                phone: '',
             },
             editFormVisible: false,
             editForm: {
                 id: '',
-                username: '',
+                name: '',
                 password: '',
-                realName: '',
-                sex: '',
+                gender: '',
                 birthday: '',
                 address: '',
-                tel: '',
+                phone: '',
                 email: '',
-                registerDate: '',
-                readerNumber: ''
+                cardNumber: '',
             },
         }
     },
@@ -183,9 +144,9 @@ export default {
         search() {
             axios.get('/reader/page', {
                 params: {
-                    username: this.searchForm.username,
-                    tel: this.searchForm.tel,
-                    readerNumber: this.searchForm.readerNumber,
+                    name: this.searchForm.name,
+                    phone: this.searchForm.phone,
+                    cardNumber: this.searchForm.cardNumber,
                 }
             }).then(res => {
                 if (res.data.code === 1) {
@@ -202,29 +163,6 @@ export default {
         handleCurrentChange(val) {
             this.currentPage = val
             this.loadData()
-        },
-        handleSubmitClick() {
-            this.addForm.username = ''
-            this.addForm.password = ''
-            this.addForm.realName = ''
-            this.addForm.address = ''
-            this.addForm.tel = ''
-            this.addForm.email = ''
-            this.addForm.readerNumber = ''
-            this.addForm.birthday = ''
-            this.addFormVisible = true
-        },
-        addReader() {
-            axios.post('/reader', this.addForm)
-                .then(res => {
-                    if (res.data.code === 1) {
-                        this.$message.success(res.data.msg)
-                        this.loadData()
-                        this.addFormVisible = false
-                    } else {
-                        this.$message.error(res.data.msg)
-                    }
-                })
         },
         showEdit(row) {
             this.editFormVisible = true
@@ -259,6 +197,27 @@ export default {
                             }
                         })
                 }).catch(() => { })
+        },
+        getReaderInfo(row) {
+            axios.get('/reader/' + row.id)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$msgbox({
+                            title: '读者信息',
+                            message: '姓名：' + res.data.data.name + '<br>' +
+                                '性别：' + res.data.data.gender + '<br>' +
+                                '生日：' + res.data.data.birthday + '<br>' +
+                                '联系方式：' + res.data.data.phone + '<br>' +
+                                '邮箱：' + res.data.data.email + '<br>' +
+                                '地址：' + res.data.data.address + '<br>' +
+                                '借书卡号：' + res.data.data.cardNumber + '<br>' +
+                                '注册时间：' + res.data.data.createTime + '<br>'
+                            ,
+                            dangerouslyUseHTMLString: true,
+                            confirmButtonText: '确定',
+                        }).catch(() => { })
+                    }
+                })
         }
     },
     mounted() {
