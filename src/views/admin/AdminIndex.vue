@@ -62,7 +62,7 @@
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" plain @click="showEdit(scope.row)">编辑</el-button>
-                    <el-button type="danger" size="mini" plain @click="deleteById(scope.row)">删除</el-button>
+                    <el-button type="danger" size="mini" @click="deleteById(scope.row)">删除</el-button>
                     <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="600px">
                         <el-form :model="editForm">
                             <el-form-item label="用户名" label-width="20%">
