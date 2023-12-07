@@ -7,7 +7,7 @@
             <el-form-item label="管理员类型">
                 <el-select v-model="searchForm.adminType" clearable placeholder="管理员类型">
                     <el-option label="普通管理员" value="0"></el-option>
-                    <el-option label="高级管理员" value="1"></el-option>
+                    <el-option label="超级管理员" value="1"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
@@ -22,6 +22,12 @@
                 </el-form-item>
                 <el-form-item label="密码" label-width="20%" required>
                     <el-input v-model="addForm.password" autocomplete="off" placeholder="请输入密码"></el-input>
+                </el-form-item>
+                <el-form-item label="姓名" label-width="20%" required>
+                    <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="联系方式" label-width="20%" required>
+                    <el-input v-model="addForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
                 </el-form-item>
                 <el-form-item label="管理员类型" label-width="20%" required>
                     <el-select v-model="addForm.adminType" placeholder="请选择管理员类型" style="width: calc(600px - 34%);">
@@ -39,11 +45,14 @@
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
-            <el-table-column label="用户名" width="300">
+            <el-table-column label="用户名" width="150">
                 <template slot-scope="scope">
                     <el-link type="primary" @click="getAdminInfo(scope.row)">{{ scope.row.username }}</el-link>
                 </template>
             </el-table-column>
+            <el-table-column prop="name" label="姓名" width="150"></el-table-column>
+            <el-table-column prop="phone" label="联系方式" width="150"></el-table-column>
+            <el-table-column prop="email" label="电子邮箱" width="250"></el-table-column>
             <el-table-column label="管理员类型">
                 <template slot-scope="scope">
                     <el-tag v-if="scope.row.adminType == 0" type="primary">普通管理员</el-tag>
@@ -61,6 +70,15 @@
                             </el-form-item>
                             <el-form-item label="密码" label-width="20%">
                                 <el-input v-model="editForm.password" autocomplete="off" placeholder="请输入新密码"></el-input>
+                            </el-form-item>
+                            <el-form-item label="姓名" label-width="20%">
+                                <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系方式" label-width="20%">
+                                <el-input v-model="editForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
+                            </el-form-item>
+                            <el-form-item label="电子邮箱" label-width="20%">
+                                <el-input v-model="editForm.email" autocomplete="off" placeholder="请输入电子邮箱"></el-input>
                             </el-form-item>
                             <el-form-item label="管理员类型" label-width="20%">
                                 <el-select v-model="editForm.adminType" placeholder="请选择管理员类型"
@@ -103,12 +121,18 @@ export default {
             addForm: {
                 username: '',
                 password: '',
+                name: '',
+                phone: '',
                 adminType: ''
             },
             editFormVisible: false,
             editForm: {
+                id: '',
                 username: '',
                 password: '',
+                name: '',
+                phone: '',
+                email: '',
                 adminType: ''
             },
         }
@@ -136,7 +160,14 @@ export default {
                         this.$msgbox({
                             title: '管理员信息',
                             message: '用户名：' + res.data.data.username + '<br>' +
-                                '管理员类型：' + (res.data.data.adminType === 0 ? '普通管理员' : '高级管理员'),
+                                '姓名：' + res.data.data.name + '<br>' +
+                                '联系方式：' + res.data.data.phone + '<br>' +
+                                '电子邮箱：' + res.data.data.email + '<br>' +
+                                '创建时间：' + res.data.data.createTime + '<br>' +
+                                '修改时间：' + res.data.data.updateTime + '<br>' +
+                                '修改人：' + res.data.data.updateUser + '<br>' +
+                                '管理员类型：' + (res.data.data.adminType === 0 ? '普通管理员' : '高级管理员')
+                                ,
                             dangerouslyUseHTMLString: true,
                             confirmButtonText: '确定',
                         }).catch(() => { })
@@ -166,9 +197,13 @@ export default {
             this.loadData()
         },
         handleSubmitClick() {
-            this.addForm.username = ''
-            this.addForm.password = ''
-            this.addForm.adminType = ''
+            this.addForm = {
+                username: '',
+                password: '',
+                name: '',
+                phone: '',
+                adminType: ''
+            }
             this.addFormVisible = true
         },
         deleteById(row) {
@@ -189,11 +224,7 @@ export default {
             }).catch(() => { })
         },
         addAdmin() {
-            axios.post('/admin', {
-                username: this.addForm.username,
-                password: this.addForm.password,
-                adminType: this.addForm.adminType
-            }).then(res => {
+            axios.post('/admin', this.addForm).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success('添加成功')
                     this.loadData()
@@ -206,15 +237,11 @@ export default {
         showEdit(row) {
             this.editFormVisible = true
             this.editForm = row
+            this.editForm.password = ''
             this.editForm.adminType = row.adminType.toString()
         },
         submitInfo() {
-            axios.put('/admin', {
-                id: this.editForm.id,
-                username: this.editForm.username,
-                password: this.editForm.password,
-                adminType: this.editForm.adminType
-            }).then(res => {
+            axios.put('/admin', this.editForm).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success('修改成功')
                     this.loadData()
