@@ -49,8 +49,8 @@ const routes = [
         component: () => import('../views/reader/ReaderIndex.vue')
       },
       {
-        path: 'TypeIndex',
-        component: () => import('../views/type/TypeIndex.vue')
+        path: 'CategoryIndex',
+        component: () => import('../views/category/CategoryIndex.vue')
       },
       {
         path: 'StatisticsIndex',

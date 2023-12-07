@@ -15,19 +15,19 @@
                         <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入类型名称"></el-input>
                     </el-form-item>
                     <el-form-item label="备注" label-width="15%" required>
-                        <el-input type="textarea" v-model="addForm.remarks"></el-input>
+                        <el-input type="textarea" v-model="addForm.description"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="addFormVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="addType" size="small">确 定</el-button>
+                    <el-button type="primary" @click="addCategory" size="small">确 定</el-button>
                 </div>
             </el-dialog>
-        <el-table ref="multipleTable" :data="typeData.records" tooltip-effect="dark" style="width: 100%">
+        <el-table ref="multipleTable" :data="categoryData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="类型名称" prop="name" width="200"></el-table-column>
-            <el-table-column label="备注" prop="remarks" width="300"></el-table-column>
+            <el-table-column label="备注" prop="description" width="500" show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="primary" plain size="mini" @click="showEdit(scope.row)">编辑</el-button>
@@ -38,7 +38,7 @@
                                 <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入类型名称"></el-input>
                             </el-form-item>
                             <el-form-item label="备注" label-width="20%" required>
-                                <el-input type="textarea" v-model="editForm.remarks"></el-input>
+                                <el-input type="textarea" v-model="editForm.description"></el-input>
                             </el-form-item>
                         </el-form>
                         <div slot="footer" class="dialog-footer">
@@ -53,7 +53,7 @@
         <div>
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
                 :page-sizes="[10, 15, 20, 30]" :page-size="10" layout="total, sizes, prev, pager, next, jumper"
-                :total="typeData.total">
+                :total="categoryData.total">
             </el-pagination>
         </div>
     </el-container>
@@ -67,24 +67,23 @@ export default {
             searchForm: {
                 name: "",
             },
-            typeData: [],
+            categoryData: [],
             addFormVisible: false,
             addForm: {
                 name: "",
-                remarks: "",
+                description: "",
             },
             editFormVisible: false,
             editForm: {
                 id: "",
                 name: "",
-                remarks: "",
+                description: "",
             },
         };
     },
     methods: {
         loadData() {
-            axios
-                .get("/type/page", {
+            axios.get("/category/page", {
                     params: {
                         page: this.currentPage,
                         pageSize: this.pageSize,
@@ -92,22 +91,21 @@ export default {
                 })
                 .then((res) => {
                     if (res.data.code === 1) {
-                        this.typeData = res.data.data;
+                        this.categoryData = res.data.data;
                     } else {
                         this.$message.error(res.data.msg);
                     }
                 });
         },
         search() {
-            axios
-                .get("/type/page", {
+            axios.get("/category/page", {
                     params: {
                         name: this.searchForm.name,
                     },
                 })
                 .then((res) => {
                     if (res.data.code === 1) {
-                        this.typeData = res.data.data;
+                        this.categoryData = res.data.data;
                     } else {
                         this.$message.error(res.data.msg);
                     }
@@ -122,12 +120,14 @@ export default {
             this.loadData();
         },
         handleSubmitClick() {
-            this.addForm.name = "";
-            this.addForm.remarks = "";
+            this.addForm = {
+                name: "",
+                description: "",
+            };
             this.addFormVisible = true;
         },
-        addType() {
-            axios.post("/type", this.addForm)
+        addCategory() {
+            axios.post("/category", this.addForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("新增类型成功");
@@ -145,7 +145,7 @@ export default {
                 type: "warning",
             })
                 .then(() => {
-                    axios.delete("/type/" + row.id)
+                    axios.delete("/category/" + row.id)
                         .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message.success("删除成功");
@@ -161,7 +161,7 @@ export default {
             this.editForm = row;
         },
         submitInfo() {
-            axios.put("/type", this.editForm)
+            axios.put("/category", this.editForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功");

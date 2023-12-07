@@ -24,9 +24,9 @@
             },
             {
                 "title": "类型管理",
-                "name": "TypeIndex",
+                "name": "CategoryIndex",
                 "icon": "el-icon-menu",
-                "path": "/index/TypeIndex"
+                "path": "/index/CategoryIndex"
             },
             {
                 "title": "公告管理",

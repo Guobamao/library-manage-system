@@ -5,11 +5,12 @@
                 <el-input v-model="searchForm.isbn" placeholder="图书编号"></el-input>
             </el-form-item>
             <el-form-item label="书名">
-                <el-input v-model="searchForm.name" placeholder="书名"></el-input>
+                <el-input v-model="searchForm.title" placeholder="书名"></el-input>
             </el-form-item>
             <el-form-item label="图书分类">
-                <el-select v-model="searchForm.typeId" placeholder="图书分类" clearable>
-                    <el-option v-for="item in typeData.records" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                <el-select v-model="searchForm.categoryId" placeholder="图书分类" clearable>
+                    <el-option v-for="item in categoryData.records" :key="item.id" :label="item.name"
+                        :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
@@ -20,39 +21,40 @@
         <el-dialog title="添加图书" :visible.sync="addFormVisible" width="600px">
             <el-form :model="addForm">
                 <el-form-item label="图书名称" label-width="15%" required>
-                    <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入图书名称"></el-input>
+                    <el-input v-model="addForm.title" autocomplete="off" placeholder="请输入图书名称"></el-input>
                 </el-form-item>
                 <el-form-item label="作者" label-width="15%" required>
                     <el-input v-model="addForm.author" autocomplete="off" placeholder="请输入作者"></el-input>
                 </el-form-item>
                 <el-form-item label="出版社" label-width="15%" required>
-                    <el-input v-model="addForm.publish" autocomplete="off" placeholder="请输入出版社"></el-input>
+                    <el-input v-model="addForm.publisher" autocomplete="off" placeholder="请输入出版社"></el-input>
                 </el-form-item>
                 <el-form-item label="ISBN" label-width="15%" required>
                     <el-input v-model="addForm.isbn" autocomplete="off" placeholder="请输入ISBN"></el-input>
                 </el-form-item>
-                <el-form-item label="语言" label-width="15%" required>
-                    <el-input v-model="addForm.language" autocomplete="off" placeholder="请输入语言"></el-input>
+                <el-form-item label="出版日期" label-width="15%" required>
+                    <el-date-picker v-model="addForm.publishDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                        style="width: calc(600px - 26%);"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="简介" label-width="15%" required>
+                    <el-input type="textarea" v-model="addForm.description"></el-input>
+                </el-form-item>
+                <el-form-item label="封面" label-width="15%" required>
+                    <el-input v-model="addForm.cover" autocomplete="off" placeholder="请输入封面URL"></el-input>
                 </el-form-item>
                 <el-form-item label="价格" label-width="15%" required>
                     <el-input v-model="addForm.price" autocomplete="off" placeholder="请输入价格"></el-input>
                 </el-form-item>
-                <el-form-item label="出版日期" label-width="15%" required>
-                    <el-date-picker v-model="addForm.publishDate" type="date" placeholder="选择日期" style="width: calc(600px - 26%);"></el-date-picker>
+                <el-form-item label="数量" label-width="15%" required>
+                    <el-input v-model="addForm.quantity" autocomplete="off" placeholder="请输入图书数量"></el-input>
+                </el-form-item>
+                <el-form-item label="语言" label-width="15%" required>
+                    <el-input v-model="addForm.language" autocomplete="off" placeholder="请输入语言"></el-input>
                 </el-form-item>
                 <el-form-item label="图书分类" label-width="15%" required>
-                    <el-select v-model="addForm.typeId" placeholder="图书分类" style="width: calc(600px - 26%);">
-                        <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    <el-select v-model="addForm.categoryId" placeholder="图书分类" style="width: calc(600px - 26%);">
+                        <el-option v-for="item in categoryData.records" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
-                </el-form-item>
-                <el-form-item label="状态" label-width="15%" required>
-                    <el-select v-model="addForm.status" placeholder="状态" style="width: calc(600px - 26%);">
-                        <el-option label="在馆" value="0"></el-option>
-                        <el-option label="借出" value="1"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="简介" label-width="15%" required>
-                    <el-input type="textarea" v-model="addForm.introduction"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -63,14 +65,22 @@
         <el-table ref="multipleTable" :data="bookData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
-            <el-table-column label="图书编号" prop="isbn" width="100"></el-table-column>
-            <el-table-column label="图书名称" prop="name" width="180"></el-table-column>
-            <el-table-column label="作者" prop="author" width="100"></el-table-column>
-            <el-table-column label="图书类型" prop="type" width="100">
+            <el-table-column label="封面" prop="cover" width="120">
+                <template slot-scope="scope">
+                    <img :src="scope.row.cover" alt="" style="width: 80px;">
+                </template>
             </el-table-column>
-            <el-table-column label="出版社" prop="publish" width="150"></el-table-column>
+            <el-table-column label="图书编号" prop="isbn" width="150"></el-table-column>
+            <el-table-column label="图书名称" prop="title" width="150">
+                <template slot-scope="scope">
+                    <el-link :underline="false" type="primary" @click="getBookInfo(scope.row)">{{scope.row.title}}</el-link>
+                </template>
+            </el-table-column>
+            <el-table-column label="作者" prop="author" width="150"></el-table-column>
+            <el-table-column label="图书类型" prop="categoryName" width="100"></el-table-column>
+            <el-table-column label="出版社" prop="publisher" width="150"></el-table-column>
             <el-table-column label="价格" prop="price" width="80"></el-table-column>
-            <el-table-column label="语言" prop="language"></el-table-column>
+            <el-table-column label="语言" prop="language" width="80"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="primary" plain size="mini" @click="showEdit(scope.row)">编辑</el-button>
@@ -78,38 +88,40 @@
                     <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="600px">
                         <el-form :model="editForm">
                             <el-form-item label="图书名称" label-width="20%" required>
-                                <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入图书名称"></el-input>
+                                <el-input v-model="editForm.title" autocomplete="off" placeholder="请输入图书名称"></el-input>
                             </el-form-item>
                             <el-form-item label="作者" label-width="20%" required>
                                 <el-input v-model="editForm.author" autocomplete="off" placeholder="请输入作者"></el-input>
                             </el-form-item>
                             <el-form-item label="出版社" label-width="20%" required>
-                                <el-input v-model="editForm.publish" autocomplete="off" placeholder="请输入出版社"></el-input>
+                                <el-input v-model="editForm.publisher" autocomplete="off" placeholder="请输入出版社"></el-input>
+                            </el-form-item>
+                            <el-form-item label="出版日期" label-width="20%" required>
+                                <el-date-picker v-model="editForm.publishDate" type="date"
+                                    placeholder="选择日期"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="ISBN" label-width="20%" required>
                                 <el-input v-model="editForm.isbn" autocomplete="off" placeholder="请输入ISBN"></el-input>
                             </el-form-item>
                             <el-form-item label="简介" label-width="20%" required>
-                                <el-input type="textarea" v-model="editForm.introduction"></el-input>
+                                <el-input type="textarea" v-model="editForm.description"></el-input>
                             </el-form-item>
-                            <el-form-item label="语言" label-width="20%" required>
-                                <el-input v-model="editForm.language" autocomplete="off" placeholder="请输入语言"></el-input>
+                            <el-form-item label="封面" label-width="20%" required>
+                                <el-input v-model="editForm.cover" autocomplete="off" placeholder="请输入封面URL"></el-input>
                             </el-form-item>
                             <el-form-item label="价格" label-width="20%" required>
                                 <el-input v-model="editForm.price" autocomplete="off" placeholder="请输入价格"></el-input>
                             </el-form-item>
-                            <el-form-item label="出版日期" label-width="20%" required>
-                                <el-date-picker v-model="editForm.publishDate" type="date" placeholder="选择日期"></el-date-picker>
+                            <el-form-item label="数量" label-width="20%" required>
+                                <el-input v-model="editForm.quantity" autocomplete="off" placeholder="请输入图书数量"></el-input>
+                            </el-form-item>
+                            <el-form-item label="语言" label-width="20%" required>
+                                <el-input v-model="editForm.language" autocomplete="off" placeholder="请输入语言"></el-input>
                             </el-form-item>
                             <el-form-item label="图书分类" label-width="20%" required>
-                                <el-select v-model="editForm.typeId" placeholder="图书分类">
-                                    <el-option v-for="item in typeData" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="状态" label-width="20%" required>
-                                <el-select v-model="editForm.status" placeholder="状态">
-                                    <el-option label="在馆" value="0"></el-option>
-                                    <el-option label="借出" value="1"></el-option>
+                                <el-select v-model="editForm.categoryId" placeholder="图书分类">
+                                    <el-option v-for="item in categoryData" :key="item.id" :label="item.name"
+                                        :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-form>
@@ -136,39 +148,41 @@ import axios from 'axios'
 export default {
     data() {
         return {
-            bookData: [],
-            typeData: [],
-            searchForm: {
+            bookData: [], // 图书数据
+            categoryData: [], // 图书分类数据
+            searchForm: { // 搜索表单
                 isbn: '',
-                name: '',
-                typeId: '',
+                title: '',
+                categoryId: '',
             },
             addFormVisible: false,
-            addForm: {
-                name: '',
+            addForm: { // 添加图书表单
+                title: '',
                 author: '',
-                publish: '',
-                isbn: '',
-                introduction: '',
-                language: '',
-                price: '',
+                publisher: '',
                 publishDate: '',
-                typeId: '',
-                status: '',
+                isbn: '',
+                description: '',
+                cover: '',
+                price: '',
+                quantity: '',
+                categoryId: '',
+                language: ''
             },
             editFormVisible: false,
-            editForm: {
+            editForm: { // 编辑图书表单
                 id: '',
-                name: '',
+                title: '',
                 author: '',
-                publish: '',
-                isbn: '',
-                introduction: '',
-                language: '',
-                price: '',
+                publisher: '',
                 publishDate: '',
-                typeId: '',
-                status: '',
+                isbn: '',
+                description: '',
+                cover: '',
+                price: '',
+                quantity: '',
+                categoryId: '',
+                language: '',
             },
         }
     },
@@ -187,10 +201,10 @@ export default {
                         this.$message.error(res.data.msg);
                     }
                 });
-            axios.get('/type/page')
+            axios.get('/category/page')
                 .then((res) => {
                     if (res.data.code === 1) {
-                        this.typeData = res.data.data;
+                        this.categoryData = res.data.data;
                     } else {
                         this.$message.error(res.data.msg);
                     }
@@ -213,8 +227,8 @@ export default {
                     page: this.currentPage,
                     pageSize: this.pageSize,
                     isbn: this.searchForm.isbn,
-                    name: this.searchForm.name,
-                    typeId: this.searchForm.typeId,
+                    title: this.searchForm.title,
+                    categoryId: this.searchForm.categoryId,
                 }
             }).then((res) => {
                 if (res.data.code === 1) {
@@ -268,7 +282,7 @@ export default {
                             this.$message.error(res.data.msg);
                         }
                     })
-            }).catch(() => {});
+            }).catch(() => { });
         },
     },
     mounted() {
