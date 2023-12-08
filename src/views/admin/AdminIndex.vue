@@ -15,32 +15,6 @@
             </el-form-item>
             <el-button type="primary" @click="handleSubmitClick">添加</el-button>
         </el-form>
-        <el-dialog title="添加管理员" :visible.sync="addFormVisible" width="600px">
-            <el-form :model="addForm">
-                <el-form-item label="用户名" label-width="20%" required>
-                    <el-input v-model="addForm.username" autocomplete="off" placeholder="请输入用户名"></el-input>
-                </el-form-item>
-                <el-form-item label="密码" label-width="20%" required>
-                    <el-input v-model="addForm.password" autocomplete="off" placeholder="请输入密码"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名" label-width="20%" required>
-                    <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
-                </el-form-item>
-                <el-form-item label="联系方式" label-width="20%" required>
-                    <el-input v-model="addForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
-                </el-form-item>
-                <el-form-item label="管理员类型" label-width="20%" required>
-                    <el-select v-model="addForm.adminType" placeholder="请选择管理员类型" style="width: calc(600px - 34%);">
-                        <el-option label="普通管理员" value=0></el-option>
-                        <el-option label="高级管理员" value=1></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="addFormVisible = false" size="small">取 消</el-button>
-                <el-button type="primary" @click="addAdmin" size="small">确 定</el-button>
-            </div>
-        </el-dialog>
         <el-table ref="multipleTable" :data="adminData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55">
             </el-table-column>
@@ -63,36 +37,6 @@
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" plain @click="showEdit(scope.row)">编辑</el-button>
                     <el-button type="danger" size="mini" @click="deleteById(scope.row)">删除</el-button>
-                    <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="600px">
-                        <el-form :model="editForm">
-                            <el-form-item label="用户名" label-width="20%">
-                                <el-input v-model="editForm.username" autocomplete="off" placeholder="请输入用户名"></el-input>
-                            </el-form-item>
-                            <el-form-item label="密码" label-width="20%">
-                                <el-input v-model="editForm.password" autocomplete="off" placeholder="请输入新密码"></el-input>
-                            </el-form-item>
-                            <el-form-item label="姓名" label-width="20%">
-                                <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
-                            </el-form-item>
-                            <el-form-item label="联系方式" label-width="20%">
-                                <el-input v-model="editForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
-                            </el-form-item>
-                            <el-form-item label="电子邮箱" label-width="20%">
-                                <el-input v-model="editForm.email" autocomplete="off" placeholder="请输入电子邮箱"></el-input>
-                            </el-form-item>
-                            <el-form-item label="管理员类型" label-width="20%">
-                                <el-select v-model="editForm.adminType" placeholder="请选择管理员类型"
-                                    style="width: calc(600px - 34%);">
-                                    <el-option label="普通管理员" value=0></el-option>
-                                    <el-option label="高级管理员" value=1></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button @click="editFormVisible = false" size="small">取 消</el-button>
-                            <el-button type="primary" @click="submitInfo" size="small">确 定</el-button>
-                        </div>
-                    </el-dialog>
                 </template>
             </el-table-column>
         </el-table>
@@ -103,6 +47,66 @@
                 :total="adminData.total">
             </el-pagination>
         </div>
+
+        <!-- 页面对话框 -->
+        <!-- 添加管理员对话框 -->
+        <el-dialog title="添加管理员" :visible.sync="addFormVisible" width="30rem">
+            <el-form :model="addForm">
+                <el-form-item label="用户名" label-width="25%" required>
+                    <el-input v-model="addForm.username" autocomplete="off" placeholder="请输入用户名"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" label-width="25%" required>
+                    <el-input v-model="addForm.password" autocomplete="off" placeholder="请输入密码"></el-input>
+                </el-form-item>
+                <el-form-item label="姓名" label-width="25%" required>
+                    <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="联系方式" label-width="25%" required>
+                    <el-input v-model="addForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
+                </el-form-item>
+                <el-form-item label="管理员类型" label-width="25%" required>
+                    <el-select v-model="addForm.adminType" placeholder="请选择管理员类型" style="width: calc(30rem - 45%);">
+                        <el-option label="普通管理员" value=0></el-option>
+                        <el-option label="高级管理员" value=1></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="addFormVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="addAdmin" size="small">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 编辑管理员对话框 -->
+        <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="30rem">
+            <el-form :model="editForm">
+                <el-form-item label="用户名" label-width="20%">
+                    <el-input v-model="editForm.username" autocomplete="off" placeholder="请输入用户名"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" label-width="20%">
+                    <el-input v-model="editForm.password" autocomplete="off" placeholder="请输入新密码"></el-input>
+                </el-form-item>
+                <el-form-item label="姓名" label-width="20%">
+                    <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="联系方式" label-width="20%">
+                    <el-input v-model="editForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
+                </el-form-item>
+                <el-form-item label="电子邮箱" label-width="20%">
+                    <el-input v-model="editForm.email" autocomplete="off" placeholder="请输入电子邮箱"></el-input>
+                </el-form-item>
+                <el-form-item label="管理员类型" label-width="20%">
+                    <el-select v-model="editForm.adminType" placeholder="请选择管理员类型" style="width: calc(30rem - 36%);">
+                        <el-option label="普通管理员" value=0></el-option>
+                        <el-option label="高级管理员" value=1></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="editFormVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="submitInfo" size="small">确 定</el-button>
+            </div>
+        </el-dialog>
     </el-container>
 </template>
 
@@ -167,7 +171,7 @@ export default {
                                 '修改时间：' + res.data.data.updateTime + '<br>' +
                                 '修改人：' + res.data.data.updateUser + '<br>' +
                                 '管理员类型：' + (res.data.data.adminType === 0 ? '普通管理员' : '高级管理员')
-                                ,
+                            ,
                             dangerouslyUseHTMLString: true,
                             confirmButtonText: '确定',
                         }).catch(() => { })

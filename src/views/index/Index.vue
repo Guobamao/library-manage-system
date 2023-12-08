@@ -73,7 +73,7 @@ export default {
     methods: {
         // 退出登录
         logout() {
-            this.$axios.post(this.adminType ? "/admin/logout" : "/reader/logout").then(res => {
+            this.$axios.post("/admin/logout").then(res => {
                 if (res.data.code === 1) {
                     this.$message.success("退出登录成功");
                     this.$router.push("/login");

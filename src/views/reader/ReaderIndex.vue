@@ -45,39 +45,6 @@
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" plain @click="showEdit(scope.row)">编辑</el-button>
                     <el-button type="danger" size="mini" plain @click="deleteById(scope.row)">删除</el-button>
-                    <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="600px">
-                        <el-form :model="editForm">
-                            <el-form-item label="借书卡号" label-width="20%">
-                                <el-input v-model="editForm.cardNumber" autocomplete="off" placeholder="请输入借书卡号"></el-input>
-                            </el-form-item>
-                            <el-form-item label="姓名" label-width="20%" required>
-                                <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
-                            </el-form-item>
-                            <el-form-item label="性别" label-width="20%" required>
-                                <el-select v-model="editForm.gender" placeholder="请选择性别" style="width: calc(600px - 34%);">
-                                    <el-option label="男" value=0></el-option>
-                                    <el-option label="女" value=1></el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="联系方式" label-width="20%" required>
-                                <el-input v-model="editForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
-                            </el-form-item>
-                            <el-form-item label="邮箱" label-width="20%" required>
-                                <el-input v-model="editForm.email" autocomplete="off" placeholder="请输入电子邮箱"></el-input>
-                            </el-form-item>
-                            <el-form-item label="地址" label-width="20%" required>
-                                <el-input v-model="editForm.address" autocomplete="off" placeholder="请输入地址"></el-input>
-                            </el-form-item>
-                            <el-form-item label="生日" label-width="20%" required>
-                                <el-date-picker v-model="editForm.birthday" type="date" placeholder="选择日期"
-                                    value-format="yyyy-MM-dd" style="width: calc(600px - 34%);"></el-date-picker>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button @click="editFormVisible = false">取 消</el-button>
-                            <el-button type="primary" @click="submitInfo">确 定</el-button>
-                        </div>
-                    </el-dialog>
                 </template>
             </el-table-column>
         </el-table>
@@ -88,6 +55,42 @@
                 :total="readerData.total">
             </el-pagination>
         </div>
+
+        <!-- 页面对话框 -->
+        <!-- 读者编辑对话框 -->
+        <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="30rem">
+            <el-form :model="editForm">
+                <el-form-item label="借书卡号" label-width="20%">
+                    <el-input v-model="editForm.cardNumber" autocomplete="off" placeholder="请输入借书卡号"></el-input>
+                </el-form-item>
+                <el-form-item label="姓名" label-width="20%" required>
+                    <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="性别" label-width="20%" required>
+                    <el-select v-model="editForm.gender" placeholder="请选择性别" style="width: calc(30rem - 34%);">
+                        <el-option label="男" value=0></el-option>
+                        <el-option label="女" value=1></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="联系方式" label-width="20%" required>
+                    <el-input v-model="editForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" label-width="20%" required>
+                    <el-input v-model="editForm.email" autocomplete="off" placeholder="请输入电子邮箱"></el-input>
+                </el-form-item>
+                <el-form-item label="地址" label-width="20%" required>
+                    <el-input v-model="editForm.address" autocomplete="off" placeholder="请输入地址"></el-input>
+                </el-form-item>
+                <el-form-item label="生日" label-width="20%" required>
+                    <el-date-picker v-model="editForm.birthday" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                        style="width: calc(30rem - 36%);"></el-date-picker>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="editFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitInfo">确 定</el-button>
+            </div>
+        </el-dialog>
     </el-container>
 </template>
 

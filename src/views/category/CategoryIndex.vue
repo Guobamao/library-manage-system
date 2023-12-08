@@ -9,20 +9,6 @@
             </el-form-item>
             <el-button type="primary" @click="handleSubmitClick">新增类型</el-button>
         </el-form>
-        <el-dialog title="新增类型" :visible.sync="addFormVisible" width="600px">
-                <el-form :model="addForm">
-                    <el-form-item label="类型名称" label-width="15%" required>
-                        <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入类型名称"></el-input>
-                    </el-form-item>
-                    <el-form-item label="备注" label-width="15%" required>
-                        <el-input type="textarea" v-model="addForm.description"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="addFormVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="addCategory" size="small">确 定</el-button>
-                </div>
-            </el-dialog>
         <el-table ref="multipleTable" :data="categoryData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
@@ -32,20 +18,6 @@
                 <template slot-scope="scope">
                     <el-button type="primary" plain size="mini" @click="showEdit(scope.row)">编辑</el-button>
                     <el-button type="danger" size="mini" @click="deleteById(scope.row)">删除</el-button>
-                    <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="600px">
-                        <el-form :model="editForm">
-                            <el-form-item label="类型名称" label-width="20%" required>
-                                <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入类型名称"></el-input>
-                            </el-form-item>
-                            <el-form-item label="备注" label-width="20%" required>
-                                <el-input type="textarea" v-model="editForm.description"></el-input>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button @click="editFormVisible = false">取 消</el-button>
-                            <el-button type="primary" @click="submitInfo">确 定</el-button>
-                        </div>
-                    </el-dialog>
                 </template>
             </el-table-column>
         </el-table>
@@ -56,6 +28,40 @@
                 :total="categoryData.total">
             </el-pagination>
         </div>
+
+        <!-- 页面对话框 -->
+        <!-- 新增类型对话框 -->
+        <el-dialog title="新增类型" :visible.sync="addFormVisible" width="30rem">
+            <el-form :model="addForm">
+                <el-form-item label="类型名称" label-width="20%" required>
+                    <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入类型名称"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" label-width="20%" required>
+                    <el-input type="textarea" v-model="addForm.description" :rows="3"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="addFormVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="addCategory" size="small">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 编辑类型对话框 -->
+
+        <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="30rem">
+            <el-form :model="editForm">
+                <el-form-item label="类型名称" label-width="20%" required>
+                    <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入类型名称"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" label-width="20%" required>
+                    <el-input type="textarea" v-model="editForm.description" :rows="3"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="editFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitInfo">确 定</el-button>
+            </div>
+        </el-dialog>
     </el-container>
 </template>
 
@@ -84,11 +90,11 @@ export default {
     methods: {
         loadData() {
             axios.get("/category/page", {
-                    params: {
-                        page: this.currentPage,
-                        pageSize: this.pageSize,
-                    },
-                })
+                params: {
+                    page: this.currentPage,
+                    pageSize: this.pageSize,
+                },
+            })
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.categoryData = res.data.data;
@@ -99,10 +105,10 @@ export default {
         },
         search() {
             axios.get("/category/page", {
-                    params: {
-                        name: this.searchForm.name,
-                    },
-                })
+                params: {
+                    name: this.searchForm.name,
+                },
+            })
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.categoryData = res.data.data;

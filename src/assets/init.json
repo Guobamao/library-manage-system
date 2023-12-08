@@ -6,9 +6,9 @@
         "child": [
             {
                 "title": "借阅管理",
-                "name": "LendIndex",
+                "name": "BorrowIndex",
                 "icon": "el-icon-mobile",
-                "path": "/index/LendIndex"
+                "path": "/index/BorrowIndex"
             },
             {
                 "title": "图书管理",

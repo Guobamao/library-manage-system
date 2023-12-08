@@ -29,8 +29,8 @@ const routes = [
         component: () => import('../views/index/Welcome.vue')
       },
       {
-        path: 'LendIndex',
-        component: () => import('../views/lend/LendIndex.vue')
+        path: 'BorrowIndex',
+        component: () => import('../views/borrow/BorrowIndex.vue')
       },
       {
         path: 'BookIndex',

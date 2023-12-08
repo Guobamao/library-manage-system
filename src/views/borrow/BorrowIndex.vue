@@ -1,90 +1,48 @@
 <template>
     <el-container style="display: flex; flex-direction: column;">
         <el-form :model="searchForm" size="small" :inline="true">
-            <el-form-item label="借书卡">
-                <el-input v-model="searchForm.readerNumber" placeholder="借书卡"></el-input>
+            <el-form-item label="借书卡号">
+                <el-input v-model="searchForm.readerNumber" placeholder="借书卡号"></el-input>
             </el-form-item>
             <el-form-item label="图书名称">
                 <el-input v-model="searchForm.bookName" placeholder="图书名称"></el-input>
             </el-form-item>
-            <el-form-item label="归还状态">
-                <el-select v-model="searchForm.backType" placeholder="归还状态" clearable>
-                    <el-option label="正常还书" value="0"></el-option>
-                    <el-option label="延迟还书" value="1"></el-option>
-                    <el-option label="破损还书" value="2"></el-option>
-                    <el-option label="丢失" value="3"></el-option>
-                </el-select>
+            <el-form-item label="借书人">
+                <el-input v-model="searchForm.readerName" placeholder="借书人"></el-input>
             </el-form-item>
             <el-form-item label="图书状态">
                 <el-select v-model="searchForm.status" placeholder="图书状态" clearable>
-                    <el-option label="在馆" value="0"></el-option>
-                    <el-option label="已借出" value="1"></el-option>
+                    <el-option label="未还" value="0"></el-option>
+                    <el-option label="已还" value="1"></el-option>
+                    <el-option label="已逾期" value="2"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
                 <el-button @click="search">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table ref="multipleTable" :data="lendData.records" tooltip-effect="dark" style="width: 100%">
+        <el-table ref="multipleTable" :data="borrowData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="图书名称" width="180">
                 <template slot-scope="scope">
                     <el-link type="primary" :underline="false" @click="showBookTimeline(scope.row)">
-                        {{ scope.row.book.name }}
+                        {{ scope.row.bookName }}
                     </el-link>
-                    <el-dialog title="借阅时间线" :visible.sync="bookDetailVisible" width="30%">
-                        <el-timeline :reverse="true">
-                            <el-timeline-item v-for="(item, index) in timelineData" :key="index" :timestamp="item.timestamp" placement="top">
-                                <p v-if="item.returned">
-                                    <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
-                                        {{ scope.row.book.name }}
-                                    </el-link>
-                                    已归还
-                                </p>
-                                <p v-else>
-                                    <el-link type="danger" :underline="false" style="vertical-align: baseline !important;">
-                                        {{ item.realName }}
-                                    </el-link>
-                                    借阅了
-                                    <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
-                                        {{ scope.row.book.name }}
-                                    </el-link>
-                                </p>
-                            </el-timeline-item>
-                        </el-timeline>
-                    </el-dialog>
                 </template>
             </el-table-column>
-            <el-table-column label="借书卡" prop="reader.readerNumber" width="150"></el-table-column>
-            <el-table-column label="借阅人" prop="reader.realName" width="100">
+            <el-table-column label="借书卡" prop="cardNumber" width="150"></el-table-column>
+            <el-table-column label="借阅人" prop="readerName" width="100">
                 <template slot-scope="scope">
                     <el-link type="primary" :underline="false" @click="showReaderHistory(scope.row)">
-                    {{ scope.row.reader.realName }}</el-link>
-                    <el-dialog title="借阅时间线" :visible.sync="readerHistoryVisible" width="30%">
-                        <el-timeline :reverse="true">
-                            <el-timeline-item v-for="(item, index) in readerHistoryData" :key="index" :timestamp="item.timestamp" placement="top">
-                                <p>
-                                    <el-link type="danger" :underline="false" style="vertical-align: baseline !important;">
-                                        {{ item.realName }}
-                                    </el-link>
-                                    借阅了
-                                    <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
-                                        {{ scope.row.book.name }}
-                                    </el-link>
-                                </p>
-                            </el-timeline-item>
-                        </el-timeline>
-                    </el-dialog>
+                        {{ scope.row.readerName }}</el-link>
                 </template>
             </el-table-column>
-            <el-table-column label="借阅时间" prop="lendDate" width="200"></el-table-column>
-            <el-table-column label="还书时间" prop="backDate" width="200"></el-table-column>
-            <el-table-column label="归还状态" prop="backType" width="100">
+            <el-table-column label="借阅时间" prop="borrowTime" width="200"></el-table-column>
+            <el-table-column label="还书时间" prop="actualReturnTime" width="200"></el-table-column>
+            <el-table-column label="归还状态" prop="status" width="100">
                 <template slot-scope="scope">
-                    <!-- 如果status没有值则显示在借中 -->
-                    <el-tag :type="status[scope.row.backType] || 'info'">{{ status_text[scope.row.backType] || '在借中'
-                    }}</el-tag>
+                    <el-tag :type="status[scope.row.status]">{{ status_text[scope.row.status] }}</el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -97,9 +55,52 @@
         <div>
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
                 :page-sizes="[10, 15, 20, 30]" :page-size="10" layout="total, sizes, prev, pager, next, jumper"
-                :total="lendData.total">
+                :total="borrowData.total">
             </el-pagination>
         </div>
+
+        <!-- 页面对话框 -->
+        <!-- 图书借阅时间线对话框 -->
+        <el-dialog title="借阅时间线" :visible.sync="bookDetailVisible" width="30%">
+            <el-timeline :reverse="true">
+                <el-timeline-item v-for="(item, index) in timelineData" :key="index" :timestamp="item.timestamp"
+                    placement="top">
+                    <p v-if="item.returned">
+                        <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
+                            {{ scope.row.bookName }}
+                        </el-link>
+                        已归还
+                    </p>
+                    <p v-else>
+                        <el-link type="danger" :underline="false" style="vertical-align: baseline !important;">
+                            {{ item.readerName }}
+                        </el-link>
+                        借阅了
+                        <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
+                            {{ scope.row.bookName }}
+                        </el-link>
+                    </p>
+                </el-timeline-item>
+            </el-timeline>
+        </el-dialog>
+
+        <!-- 读者借阅历史对话框 -->
+        <el-dialog title="借阅时间线" :visible.sync="readerHistoryVisible" width="30%">
+            <el-timeline :reverse="true">
+                <el-timeline-item v-for="(item, index) in readerHistoryData" :key="index" :timestamp="item.timestamp"
+                    placement="top">
+                    <p>
+                        <el-link type="danger" :underline="false" style="vertical-align: baseline !important;">
+                            {{ item.readerName }}
+                        </el-link>
+                        借阅了
+                        <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
+                            {{ scope.row.bookName }}
+                        </el-link>
+                    </p>
+                </el-timeline-item>
+            </el-timeline>
+        </el-dialog>
     </el-container>
 </template>
   
@@ -109,14 +110,14 @@ export default {
     data() {
         return {
             searchForm: {
-                readerNumber: '',
+                cardNumber: '',
                 bookName: '',
-                backType: '',
+                readerName: '',
                 status: ''
             },
-            lendData: [],
-            status: ['primary', 'success', 'warning', 'danger'],
-            status_text: ['已借阅', '已归还', '已超期', '已丢失'],
+            borrowData: [],
+            status: ['warning', 'success', 'danger'],
+            status_text: ['未还', '已还', '已逾期'],
             bookDetailVisible: false, // 图书借阅时间线弹窗
             readerHistoryVisible: false, // 读者借阅历史弹窗
             timelineData: [], // 时间线数据
@@ -126,7 +127,7 @@ export default {
     methods: {
         loadData() {
             axios
-                .get("/lend/page", {
+                .get("/borrow/page", {
                     params: {
                         page: this.currentPage,
                         pageSize: this.pageSize,
@@ -134,7 +135,7 @@ export default {
                 })
                 .then((res) => {
                     if (res.data.code === 1) {
-                        this.lendData = res.data.data;
+                        this.borrowData = res.data.data;
                     } else {
                         this.$message.error(res.data.msg);
                     }
@@ -142,19 +143,19 @@ export default {
         },
         search() {
             axios
-                .get("/lend/page", {
+                .get("/borrow/page", {
                     params: {
                         page: this.currentPage,
                         pageSize: this.pageSize,
-                        readerNumber: this.searchForm.readerNumber,
+                        cardNumber: this.searchForm.cardNumber,
                         bookName: this.searchForm.bookName,
-                        backType: this.searchForm.backType,
+                        readerName: this.searchForm.readerName,
                         status: this.searchForm.status
                     },
                 })
                 .then((res) => {
                     if (res.data.code === 1) {
-                        this.lendData = res.data.data;
+                        this.borrowData = res.data.data;
                     } else {
                         this.$message.error(res.data.msg);
                     }
@@ -169,7 +170,7 @@ export default {
             this.loadData()
         },
         showBookTimeline(item) {
-            axios.get('/lend/timeline', {
+            axios.get('/borrow/timeline', {
                 params: {
                     bookId: item.bookId
                 }
@@ -183,7 +184,7 @@ export default {
             this.bookDetailVisible = true
         },
         showReaderHistory(item) {
-            axios.get('/lend/history', {
+            axios.get('/borrow/history', {
                 params: {
                     readerId: item.readerId
                 }
@@ -202,7 +203,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                axios.delete('/lend/' + item.id).then(res => {
+                axios.delete('/borrow/' + item.id).then(res => {
                     if (res.data.code === 1) {
                         this.$message.success("删除成功")
                         this.loadData()
