@@ -96,6 +96,8 @@ export default {
                     isClosable: true
                 });
             }
+            sessionStorage.setItem("tabs", JSON.stringify(this.tabs));
+            sessionStorage.setItem("currentTabIndex", this.currentTabIndex);
         },
         removeTab(tabName) {
             // 判断当前激活的标签是否为传入的标签
@@ -112,6 +114,8 @@ export default {
                 })
             }
             this.tabs = this.tabs.filter(tab => tab.index !== tabName);
+            sessionStorage.setItem("tabs", JSON.stringify(this.tabs));
+            sessionStorage.setItem("currentTabIndex", this.currentTabIndex);
         },
         handleMenuClick(item) {
             this.addTab(item);
@@ -119,6 +123,8 @@ export default {
         },
         handleTabClick(tab) {
             const path = this.tabs.find(item => item.index === tab.name).path;
+            this.currentTabIndex = tab.name;
+            sessionStorage.setItem("currentTabIndex", this.currentTabIndex);
             this.$router.push(path);
         }
     },
@@ -128,6 +134,8 @@ export default {
         this.username = localStorage.getItem("username");
         this.adminType = localStorage.getItem("adminType");
         this.apiData = apiData;
+        this.currentTabIndex = sessionStorage.getItem("currentTabIndex") || "HomePage";
+        this.tabs = sessionStorage.getItem("tabs") ? JSON.parse(sessionStorage.getItem("tabs")) : this.tabs;
     }
 }
 </script>
