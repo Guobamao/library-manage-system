@@ -1,5 +1,5 @@
 <template>
-    <el-container style="display: flex; flex-direction: column; ">
+    <el-container v-loading="loading" style="display: flex; flex-direction: column; ">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="借书卡号">
                 <el-input v-model="searchForm.cardNumber" placeholder="借书卡号"></el-input>
@@ -126,25 +126,31 @@ export default {
                 email: '',
                 cardNumber: '',
             },
+            loading: true,
+            loadingTime: 500
         }
     },
     methods: {
         loadData() {
+            this.loading = true
             axios.get('/reader/page', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize
                 }
+            }).then(res => {
+                if (res.data.code === 1) {
+                    this.readerData = res.data.data
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
+                } else {
+                    this.$message.error(res.data.msg)
+                }
             })
-                .then(res => {
-                    if (res.data.code === 1) {
-                        this.readerData = res.data.data
-                    } else {
-                        this.$message.error(res.data.msg)
-                    }
-                })
         },
         search() {
+            this.loading = true
             axios.get('/reader/page', {
                 params: {
                     name: this.searchForm.name,
@@ -154,6 +160,9 @@ export default {
             }).then(res => {
                 if (res.data.code === 1) {
                     this.readerData = res.data.data
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
                 } else {
                     this.$message.error(res.data.msg)
                 }
@@ -188,18 +197,17 @@ export default {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            })
-                .then(() => {
-                    axios.delete('/reader/' + row.id)
-                        .then(res => {
-                            if (res.data.code === 1) {
-                                this.$message.success('删除成功')
-                                this.loadData()
-                            } else {
-                                this.$message.error(res.data.msg)
-                            }
-                        })
-                }).catch(() => { })
+            }).then(() => {
+                axios.delete('/reader/' + row.id)
+                    .then(res => {
+                        if (res.data.code === 1) {
+                            this.$message.success('删除成功')
+                            this.loadData()
+                        } else {
+                            this.$message.error(res.data.msg)
+                        }
+                    })
+            }).catch(() => { })
         },
         getReaderInfo(row) {
             axios.get('/reader/' + row.id)

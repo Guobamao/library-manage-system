@@ -1,5 +1,5 @@
 <template>
-    <el-container style="display: flex; flex-direction: column; ">
+    <el-container v-loading="loading" style="display: flex; flex-direction: column;">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="用户名">
                 <el-input v-model="searchForm.username" placeholder="用户名"></el-input>
@@ -139,23 +139,28 @@ export default {
                 email: '',
                 adminType: ''
             },
+            loading: true,
+            loadingTime: 500
         }
     },
     methods: {
         loadData() {
+            this.loading = true
             axios.get('/admin/page', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize
                 }
+            }).then(res => {
+                if (res.data.code === 1) {
+                    this.adminData = res.data.data
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
+                } else {
+                    this.$message.error(res.data.msg)
+                }
             })
-                .then(res => {
-                    if (res.data.code === 1) {
-                        this.adminData = res.data.data
-                    } else {
-                        this.$message.error(res.data.msg)
-                    }
-                })
         },
         getAdminInfo(row) {
             axios.get('/admin/' + row.id)
@@ -170,8 +175,7 @@ export default {
                                 '创建时间：' + res.data.data.createTime + '<br>' +
                                 '修改时间：' + res.data.data.updateTime + '<br>' +
                                 '修改人：' + res.data.data.updateUser + '<br>' +
-                                '管理员类型：' + (res.data.data.adminType === 0 ? '普通管理员' : '高级管理员')
-                            ,
+                                '管理员类型：' + (res.data.data.adminType === 0 ? '普通管理员' : '高级管理员'),
                             dangerouslyUseHTMLString: true,
                             confirmButtonText: '确定',
                         }).catch(() => { })
@@ -179,6 +183,7 @@ export default {
                 })
         },
         search() {
+            this.loading = true
             axios.get('/admin/page', {
                 params: {
                     username: this.searchForm.username,
@@ -187,6 +192,9 @@ export default {
             }).then(res => {
                 if (res.data.code === 1) {
                     this.adminData = res.data.data
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
                 } else {
                     this.$message.error(res.data.msg)
                 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <i class="el-icon-info"></i>
@@ -18,11 +18,14 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      noticeData: []
+      noticeData: [],
+      loading: true,
+      loadingTime: 500
     }
   },
   methods: {
     loadData() {
+      this.loading = true
       axios.get("/notice/page", {
         params: {
           page: 1,
@@ -31,6 +34,9 @@ export default {
       }).then(res => {
         if (res.data.code === 1) {
           this.noticeData = res.data.data
+          setTimeout(() => {
+            this.loading = false
+          }, this.loadingTime)
         } else {
           this.$message.error(res.data.msg)
         }
@@ -40,7 +46,7 @@ export default {
       this.$alert(item.content, "公告内容", {
         confirmButtonText: '确定',
         dangerouslyUseHTMLString: true,
-        callback: () => {}  
+        callback: () => { }
       })
     }
   },
@@ -66,9 +72,11 @@ export default {
   cursor: pointer;
   transition: all .2s ease-in-out;
 }
+
 .item:hover {
   background-color: #f6f6f6;
 }
+
 .notice-time {
   font-size: 12px;
   color: #999;

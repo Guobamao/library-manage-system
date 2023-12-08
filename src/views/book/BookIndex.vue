@@ -1,5 +1,5 @@
 <template>
-    <el-container style="display: flex; flex-direction: column">
+    <el-container v-loading="loading" style="display: flex; flex-direction: column">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="图书编号">
                 <el-input v-model="searchForm.isbn" placeholder="图书编号"></el-input>
@@ -257,24 +257,29 @@ export default {
                 language: '',
             },
             bookInfoVisible: false,
-            bookInfo: []
+            bookInfo: [],
+            loading: true,
+            loadingTime: 500
         }
     },
     methods: {
         loadData() {
+            this.loading = true
             axios.get('/book/page', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
                 },
-            })
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.bookData = res.data.data;
-                    } else {
-                        this.$message.error(res.data.msg);
-                    }
-                });
+            }).then((res) => {
+                if (res.data.code === 1) {
+                    this.bookData = res.data.data;
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
+                } else {
+                    this.$message.error(res.data.msg);
+                }
+            });
             axios.get('/category/page')
                 .then((res) => {
                     if (res.data.code === 1) {
@@ -296,6 +301,7 @@ export default {
             this.addFormVisible = true;
         },
         search() {
+            this.loading = true
             axios.get('/book/page', {
                 params: {
                     page: this.currentPage,
@@ -306,6 +312,9 @@ export default {
                 }
             }).then((res) => {
                 if (res.data.code === 1) {
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
                     this.bookData = res.data.data;
                 } else {
                     this.$message.error(res.data.msg);

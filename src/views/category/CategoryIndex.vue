@@ -1,5 +1,5 @@
 <template>
-    <el-container style="display: flex; flex-direction: column">
+    <el-container v-loading="loading" style="display: flex; flex-direction: column">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="类型名称">
                 <el-input v-model="searchForm.name" placeholder="类型名称"></el-input>
@@ -85,37 +85,45 @@ export default {
                 name: "",
                 description: "",
             },
+            loading: true,
+            loadingTime: 500
         };
     },
     methods: {
         loadData() {
+            this.loading = true
             axios.get("/category/page", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
                 },
-            })
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.categoryData = res.data.data;
-                    } else {
-                        this.$message.error(res.data.msg);
-                    }
-                });
+            }).then((res) => {
+                if (res.data.code === 1) {
+                    this.categoryData = res.data.data;
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
+                } else {
+                    this.$message.error(res.data.msg);
+                }
+            });
         },
         search() {
+            this.loading = true
             axios.get("/category/page", {
                 params: {
                     name: this.searchForm.name,
                 },
-            })
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.categoryData = res.data.data;
-                    } else {
-                        this.$message.error(res.data.msg);
-                    }
-                });
+            }).then((res) => {
+                if (res.data.code === 1) {
+                    this.categoryData = res.data.data;
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
+                } else {
+                    this.$message.error(res.data.msg);
+                }
+            });
         },
         handleSizeChange(val) {
             this.pageSize = val;
@@ -149,18 +157,17 @@ export default {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning",
-            })
-                .then(() => {
-                    axios.delete("/category/" + row.id)
-                        .then((res) => {
-                            if (res.data.code === 1) {
-                                this.$message.success("删除成功");
-                                this.loadData();
-                            } else {
-                                this.$message.error(res.data.msg);
-                            }
-                        })
-                }).catch(() => { })
+            }).then(() => {
+                axios.delete("/category/" + row.id)
+                    .then((res) => {
+                        if (res.data.code === 1) {
+                            this.$message.success("删除成功");
+                            this.loadData();
+                        } else {
+                            this.$message.error(res.data.msg);
+                        }
+                    })
+            }).catch(() => { })
         },
         showEdit(row) {
             this.editFormVisible = true;

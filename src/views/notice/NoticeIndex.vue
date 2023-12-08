@@ -1,5 +1,5 @@
 <template>
-    <el-container style="display: flex; flex-direction: column">
+    <el-container v-loading="loading" style="display: flex; flex-direction: column">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="公告主题">
                 <el-input v-model="searchForm.title" placeholder="公告主题"></el-input>
@@ -103,39 +103,45 @@ export default {
                 createTime: "",
                 expireTime: ""
             },
+            loading: true,
+            loadingTime: 500
         };
     },
     methods: {
         loadData() {
-            axios
-                .get("/notice/page", {
-                    params: {
-                        page: this.currentPage,
-                        pageSize: this.pageSize,
-                    },
-                })
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.noticeData = res.data.data;
-                    } else {
-                        this.$message.error(res.data.msg);
-                    }
-                });
+            this.loading = true
+            axios.get("/notice/page", {
+                params: {
+                    page: this.currentPage,
+                    pageSize: this.pageSize,
+                },
+            }).then((res) => {
+                if (res.data.code === 1) {
+                    this.noticeData = res.data.data;
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
+                } else {
+                    this.$message.error(res.data.msg);
+                }
+            });
         },
         search() {
-            axios
-                .get("/notice/page", {
-                    params: {
-                        title: this.searchForm.title,
-                    },
-                })
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.noticeData = res.data.data;
-                    } else {
-                        this.$message.error(res.data.msg);
-                    }
-                });
+            this.loading = true
+            axios.get("/notice/page", {
+                params: {
+                    title: this.searchForm.title,
+                },
+            }).then((res) => {
+                if (res.data.code === 1) {
+                    this.noticeData = res.data.data;
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
+                } else {
+                    this.$message.error(res.data.msg);
+                }
+            });
         },
         handleSizeChange(val) {
             this.pageSize = val;
@@ -167,18 +173,17 @@ export default {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning",
-            })
-                .then(() => {
-                    axios.delete("/notice/" + row.id)
-                        .then((res) => {
-                            if (res.data.code === 1) {
-                                this.$message.success("删除成功");
-                                this.loadData();
-                            } else {
-                                this.$message.error(res.data.msg);
-                            }
-                        })
-                }).catch(() => { })
+            }).then(() => {
+                axios.delete("/notice/" + row.id)
+                    .then((res) => {
+                        if (res.data.code === 1) {
+                            this.$message.success("删除成功");
+                            this.loadData();
+                        } else {
+                            this.$message.error(res.data.msg);
+                        }
+                    })
+            }).catch(() => { })
         },
         showEdit(row) {
             this.editFormVisible = true;
