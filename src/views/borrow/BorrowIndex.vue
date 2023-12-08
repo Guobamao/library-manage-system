@@ -230,6 +230,7 @@ export default {
             });
         },
         search() {
+            this.loading = true
             axios.get("/borrow/page", {
                 params: {
                     page: this.currentPage,
@@ -242,6 +243,9 @@ export default {
             }).then((res) => {
                 if (res.data.code === 1) {
                     this.borrowData = res.data.data;
+                    setTimeout(() => {
+                        this.loading = false
+                    }, this.loadingTime)
                 } else {
                     this.$message.error(res.data.msg);
                 }
