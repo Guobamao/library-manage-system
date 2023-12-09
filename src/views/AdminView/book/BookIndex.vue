@@ -215,7 +215,7 @@
 </template>
   
 <script>
-import axios from 'axios'
+import { adminRequest } from '@/api/api';
 export default {
     data() {
         return {
@@ -264,7 +264,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            axios.get('/book/page', {
+            adminRequest.get('/book/page', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -279,7 +279,7 @@ export default {
                     this.$message.error(res.data.msg);
                 }
             });
-            axios.get('/category/page')
+            adminRequest.get('/category/page')
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.categoryData = res.data.data;
@@ -301,7 +301,7 @@ export default {
         },
         search() {
             this.loading = true
-            axios.get('/book/page', {
+            adminRequest.get('/book/page', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -321,7 +321,7 @@ export default {
             })
         },
         addBook() {
-            axios.post('/book', this.addForm)
+            adminRequest.post('/book', this.addForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("添加成功");
@@ -338,7 +338,7 @@ export default {
             this.editForm = row;
         },
         submitInfo() {
-            axios.put('/book', this.editForm)
+            adminRequest.put('/book', this.editForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功");
@@ -355,7 +355,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                axios.delete('/book/' + row.id)
+                adminRequest.delete('/book/' + row.id)
                     .then((res) => {
                         if (res.data.code === 1) {
                             this.$message.success("删除成功");
@@ -367,7 +367,7 @@ export default {
             }).catch(() => { });
         },
         getBookInfo(row) {
-            axios.get('/book/' + row.id)
+            adminRequest.get('/book/' + row.id)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.bookInfo = res.data.data;

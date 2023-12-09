@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { adminRequest } from '@/api/api';
 export default {
     data() {
         return {
@@ -110,7 +110,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            axios.get("/notice/page", {
+            adminRequest.get("/notice/page", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -128,7 +128,7 @@ export default {
         },
         search() {
             this.loading = true
-            axios.get("/notice/page", {
+            adminRequest.get("/notice/page", {
                 params: {
                     title: this.searchForm.title,
                 },
@@ -157,7 +157,7 @@ export default {
             this.addFormVisible = true;
         },
         addNotice() {
-            axios.post("/notice", this.addForm)
+            adminRequest.post("/notice", this.addForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("发布成功");
@@ -174,7 +174,7 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning",
             }).then(() => {
-                axios.delete("/notice/" + row.id)
+                adminRequest.delete("/notice/" + row.id)
                     .then((res) => {
                         if (res.data.code === 1) {
                             this.$message.success("删除成功");
@@ -190,7 +190,7 @@ export default {
             this.editForm = row;
         },
         submitInfo() {
-            axios.put("/notice", this.editForm)
+            adminRequest.put("/notice", this.editForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功");

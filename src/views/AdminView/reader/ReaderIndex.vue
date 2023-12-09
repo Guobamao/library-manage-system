@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { adminRequest } from '@/api/api';
 export default {
     data() {
         return {
@@ -133,7 +133,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            axios.get('/reader/page', {
+            adminRequest.get('/reader/page', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize
@@ -151,7 +151,7 @@ export default {
         },
         search() {
             this.loading = true
-            axios.get('/reader/page', {
+            adminRequest.get('/reader/page', {
                 params: {
                     name: this.searchForm.name,
                     phone: this.searchForm.phone,
@@ -181,7 +181,7 @@ export default {
             this.editForm = row
         },
         submitInfo() {
-            axios.put('/reader', this.editForm)
+            adminRequest.put('/reader', this.editForm)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功")
@@ -198,7 +198,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                axios.delete('/reader/' + row.id)
+                adminRequest.delete('/reader/' + row.id)
                     .then(res => {
                         if (res.data.code === 1) {
                             this.$message.success('删除成功')
@@ -210,7 +210,7 @@ export default {
             }).catch(() => { })
         },
         getReaderInfo(row) {
-            axios.get('/reader/' + row.id)
+            adminRequest.get('/reader/' + row.id)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$msgbox({

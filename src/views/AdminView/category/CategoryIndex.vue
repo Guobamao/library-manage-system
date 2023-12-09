@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { adminRequest } from '@/api/api';
 export default {
     data() {
         return {
@@ -92,7 +92,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            axios.get("/category/page", {
+            adminRequest.get("/category/page", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -110,7 +110,7 @@ export default {
         },
         search() {
             this.loading = true
-            axios.get("/category/page", {
+            adminRequest.get("/category/page", {
                 params: {
                     name: this.searchForm.name,
                 },
@@ -141,7 +141,7 @@ export default {
             this.addFormVisible = true;
         },
         addCategory() {
-            axios.post("/category", this.addForm)
+            adminRequest.post("/category", this.addForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("新增类型成功");
@@ -158,7 +158,7 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning",
             }).then(() => {
-                axios.delete("/category/" + row.id)
+                adminRequest.delete("/category/" + row.id)
                     .then((res) => {
                         if (res.data.code === 1) {
                             this.$message.success("删除成功");
@@ -174,7 +174,7 @@ export default {
             this.editForm = row;
         },
         submitInfo() {
-            axios.put("/category", this.editForm)
+            adminRequest.put("/category", this.editForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功");

@@ -175,7 +175,7 @@
 </template>
   
 <script>
-import axios from 'axios';
+import { adminRequest } from '@/api/api';
 export default {
     data() {
         return {
@@ -213,7 +213,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            axios.get("/borrow/page", {
+            adminRequest.get("/borrow/page", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -231,7 +231,7 @@ export default {
         },
         search() {
             this.loading = true
-            axios.get("/borrow/page", {
+            adminRequest.get("/borrow/page", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -260,7 +260,7 @@ export default {
             this.loadData()
         },
         showBookTimeline(item) {
-            axios.get('/borrow/timeline', {
+            adminRequest.get('/borrow/timeline', {
                 params: {
                     bookId: item.bookId
                 }
@@ -274,7 +274,7 @@ export default {
             this.bookDetailVisible = true
         },
         showReaderHistory(item) {
-            axios.get('/borrow/history', {
+            adminRequest.get('/borrow/history', {
                 params: {
                     readerId: item.readerId
                 }
@@ -293,7 +293,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                axios.delete('/borrow/' + item.id).then(res => {
+                adminRequest.delete('/borrow/' + item.id).then(res => {
                     if (res.data.code === 1) {
                         this.$message.success("删除成功")
                         this.loadData()
@@ -309,7 +309,7 @@ export default {
             this.editForm.status = row.status.toString()
         },
         submitInfo() {
-            axios.put('/borrow', this.editForm).then(res => {
+            adminRequest.put('/borrow', this.editForm).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success("编辑成功")
                     this.loadData()
