@@ -12,8 +12,18 @@
                         </router-link>
                     </el-col>
                     <el-col :span="12" style="display: flex; justify-content: end; align-items: center;">
-                        <span class="header-name">欢迎您：{{ username }}</span>
-                        <el-button type="danger" size="mini" @click="logout">退出登录</el-button>
+                        <el-dropdown @command="handleMenuCommand">
+                            <div class="el-dropdown-link">
+                                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                                    style="vertical-align: middle;"></el-avatar>
+                            </div>
+                            <el-dropdown-menu>
+                                <el-dropdown-item command="/user/info">个人中心</el-dropdown-item>
+                                <el-dropdown-item command="applyCard">借书卡</el-dropdown-item>
+                                <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                        <span style="margin-left: 10px">{{ username }}</span>
                     </el-col>
                 </el-row>
             </el-header>
@@ -21,7 +31,8 @@
             <el-container class="container-body">
                 <!-- 侧边菜单栏 -->
                 <el-aside style="width: 200px;">
-                    <el-menu background-color="#28333e" text-color="#fff" active-text-color="#ffd04b" :default-active="currentTabIndex">
+                    <el-menu background-color="#28333e" text-color="#fff" active-text-color="#ffd04b"
+                        :default-active="currentTabIndex">
                         <!-- 遍历父级菜单 -->
                         <el-submenu v-for="item in apiData" :key="item.name" :index="item.name">
                             <template slot="title">
@@ -50,6 +61,18 @@
                     </el-container>
                 </el-main>
             </el-container>
+            <!-- 对话框 -->
+            <el-dialog title="图书卡申请进度" :visible.sync="applyCardDialogVisible" width="30%">
+                <el-steps :active="applyCardStatus" align-center finish-status="success">
+                    <el-step title="提交申请"></el-step>
+                    <el-step title="管理员审核"></el-step>
+                    <el-step title="申请成功"></el-step>
+                </el-steps>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="applyCardDialogVisible = false" size="small">取 消</el-button>
+                    <el-button type="primary" @click="applyCardDialogVisible = false" size="small">确 定</el-button>
+                </span>
+            </el-dialog>
         </el-container>
     </div>
 </template>
@@ -57,6 +80,7 @@
 <script>
 import adminApi from "@/assets/admin.json";
 import userApi from "@/assets/user.json";
+import { adminRequest, userRequest } from "@/api/api";
 export default {
     data() {
         return {
@@ -69,19 +93,31 @@ export default {
                     path: "/",
                     isClosable: false
                 }
-            ]
+            ],
+            applyCardDialogVisible: false, // 申请借书卡对话框
+            applyCardStatus: 0, // 申请借书卡状态
         }
     },
     methods: {
         // 退出登录
         logout() {
-            this.$axios.post("/admin/logout").then(res => {
-                if (res.data.code === 1) {
-                    this.$message.success("退出登录成功");
-                    this.$router.push("/login");
-                    localStorage.clear();
-                }
-            });
+            if (localStorage.getItem('isAdmin' === 1)) {
+                adminRequest.post("/admin/logout").then(res => {
+                    if (res.data.code === 1) {
+                        this.$message.success("退出登录成功");
+                        this.$router.push("/login");
+                        localStorage.clear();
+                    }
+                });
+            } else {
+                userRequest.post("/user/logout").then(res => {
+                    if (res.data.code === 1) {
+                        this.$message.success("退出登录成功");
+                        this.$router.push("/login");
+                        localStorage.clear();
+                    }
+                });
+            }
         },
         addTab(menuItem) {
             // 判断标签页是否已经存在
@@ -128,6 +164,56 @@ export default {
             this.currentTabIndex = tab.name;
             sessionStorage.setItem("currentTabIndex", this.currentTabIndex);
             this.$router.push(path);
+        },
+        handleMenuCommand(command) {
+            if (command === "logout") {
+                this.logout();
+            } else if (command === "applyCard") {
+                this.applyCard();
+            } else {
+                window.open(command, "_blank")
+            }
+        },
+        applyCard() {
+            userRequest.post("/card/apply")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message.success("申请成功，请等待管理员审核");
+                    } else {
+                        if (res.data.msg === "已有借书卡") {
+                            this.$confirm("您已有借书卡，是否挂失？", "提示", {
+                                confirmButtonText: "确定",
+                                cancelButtonText: "取消",
+                                type: "warning"
+                            }).then(() => {
+                                userRequest.post('/card/report')
+                                    .then(res => {
+                                        if (res.data.code === 1) {
+                                            this.$message.success("挂失成功");
+                                        } else {
+                                            this.$message.error(res.data.msg)
+                                        }
+                                    })
+                            }).catch(() => { })
+                        } else if (res.data.msg === "已申请，请勿重复申请") {
+                            this.$confirm("已申请借书卡，是否查看申请进度？", "提示", {
+                                confirmButtonText: "确定",
+                                cancelButtonText: "取消",
+                                type: "warning"
+                            }).then(() => {
+                                userRequest.get('/card/status')
+                                    .then(res => {
+                                        if (res.data.code === 1) {
+                                            this.applyCardStatus = res.data.data.status + 1;
+                                            this.applyCardDialogVisible = true;
+                                        } else {
+                                            this.$message.error(res.data.msg)
+                                        }
+                                    })
+                            }).catch(() => { })
+                        }
+                    }
+                })
         }
     },
     mounted() {
@@ -135,7 +221,7 @@ export default {
     created() {
         this.username = localStorage.getItem("username");
         this.adminType = localStorage.getItem("adminType");
-        this.apiData = localStorage.getItem('admin') ? adminApi : userApi; // 判断是否为管理员,加载不同的菜单栏
+        this.apiData = localStorage.getItem('isAdmin') === 'true' ? adminApi : userApi; // 判断是否为管理员,加载不同的菜单栏
         this.currentTabIndex = sessionStorage.getItem("currentTabIndex") || "HomePage";
         this.tabs = sessionStorage.getItem("tabs") ? JSON.parse(sessionStorage.getItem("tabs")) : this.tabs;
     }

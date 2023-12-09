@@ -14,8 +14,8 @@
                 </el-form-item>
                 <el-form-item>
                     <el-select v-model="loginForm.loginType" placeholder="请选择" style="width: 100%;">
-                        <el-option label="普通用户" value="1"></el-option>
-                        <el-option label="管理员" value="2"></el-option>
+                        <el-option label="普通用户" value="0"></el-option>
+                        <el-option label="管理员" value="1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { adminRequest, userRequest } from '@/api/api'
 export default {
     data() {
         return {
@@ -57,15 +58,15 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     // 管理员登录
-                    if (this.loginForm.loginType === '2') {
-                        this.$axios.post('/admin/login', {
+                    if (this.loginForm.loginType === '1') {
+                        adminRequest.post('/admin/login', {
                             username: this.loginForm.username,
                             password: this.loginForm.password,
                         }).then(res => {
                             if (res.data.code === 1) {
                                 localStorage.setItem('username', res.data.data.username)
                                 localStorage.setItem('token', res.data.data.token)
-                                localStorage.setItem('isAdmin', 1)
+                                localStorage.setItem('isAdmin', true)
                                 this.$notify({
                                     title: '登录成功',
                                     message: '欢迎回来:  ' + res.data.data.username,
@@ -79,14 +80,14 @@ export default {
                             }
                         })
                     } else { // 用户登录
-                        this.$axios.post('/user/login', {
+                        userRequest.post('/user/login', {
                             username: this.loginForm.username,
                             password: this.loginForm.password,
                         }).then(res => {
                             if (res.data.code === 1) {
                                 localStorage.setItem('username', res.data.data.username)
                                 localStorage.setItem('token', res.data.data.token)
-                                localStorage.setItem('isAdmin', 0)
+                                localStorage.setItem('isAdmin', false)
                                 this.$notify({
                                     title: '登录成功',
                                     message: '欢迎回来: ' + res.data.data.username,

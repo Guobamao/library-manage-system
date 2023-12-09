@@ -6,21 +6,21 @@
         "child": [
             {
                 "title": "书籍查询",
-                "name": "BookSearch",
+                "name": "BookIndex",
                 "icon": "el-icon-mobile",
-                "path": "/user/BookSearch"
+                "path": "/user/BookIndex"
             },
             {
                 "title": "书籍借阅",
-                "name": "BookBorrow",
+                "name": "BorrowIndex",
                 "icon": "el-icon-notebook-1",
-                "path": "/user/BookBorrow"
+                "path": "/user/BorrowIndex"
             },
             {
                 "title": "书籍归还",
-                "name": "BookReturn",
+                "name": "ReturnIndex",
                 "icon": "el-icon-s-custom",
-                "path": "/admin/BookReturn"
+                "path": "/user/ReturnIndex"
             }
         ]
     }

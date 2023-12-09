@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { adminRequest } from '@/api/api';
 export default {
     data() {
         return {
@@ -146,7 +146,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            axios.get('/admin/page', {
+            adminRequest.get('/admin/page', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize
@@ -163,7 +163,7 @@ export default {
             })
         },
         getAdminInfo(row) {
-            axios.get('/admin/' + row.id)
+            adminRequest.get('/admin/' + row.id)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$msgbox({
@@ -184,7 +184,7 @@ export default {
         },
         search() {
             this.loading = true
-            axios.get('/admin/page', {
+            adminRequest.get('/admin/page', {
                 params: {
                     username: this.searchForm.username,
                     adminType: this.searchForm.adminType
@@ -224,7 +224,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                axios.delete('/admin/' + row.id)
+                adminRequest.delete('/admin/' + row.id)
                     .then(res => {
                         if (res.data.code === 1) {
                             this.$message.success('删除成功')
@@ -236,7 +236,7 @@ export default {
             }).catch(() => { })
         },
         addAdmin() {
-            axios.post('/admin', this.addForm).then(res => {
+            adminRequest.post('/admin', this.addForm).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success('添加成功')
                     this.loadData()
@@ -253,7 +253,7 @@ export default {
             this.editForm.adminType = row.adminType.toString()
         },
         submitInfo() {
-            axios.put('/admin', this.editForm).then(res => {
+            adminRequest.put('/admin', this.editForm).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success('修改成功')
                     this.loadData()

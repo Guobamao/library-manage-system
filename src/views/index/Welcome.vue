@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { adminRequest } from '@/api/api'
 export default {
   data() {
     return {
@@ -26,7 +26,7 @@ export default {
   methods: {
     loadData() {
       this.loading = true
-      axios.get("/notice/page", {
+      adminRequest.get("/notice/page", {
         params: {
           page: 1,
           pageSize: 5

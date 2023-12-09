@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: localStorage.getItem('admin') == 1 ? '/admin' : '/user'
+    redirect: localStorage.getItem('isAdmin') === 'true' ? '/admin' : '/user'
   },
   {
     path: '/login',
@@ -80,6 +80,11 @@ const routes = [
         component: () => import('../views/UserView/return/ReturnIndex.vue')
       }
     ]
+  },
+  {
+    path: '/user/info',
+    name: 'UserInfo',
+    component: () => import('../views/UserView/userInfo/UserInfoIndex.vue')
   }
 ]
 
@@ -120,7 +125,6 @@ axios.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // 删除localStorage的信息
       localStorage.clear()
-
       // 跳转到登录页面
       router.push('/login')
     }
