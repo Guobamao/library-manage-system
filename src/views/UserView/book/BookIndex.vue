@@ -6,9 +6,10 @@
             </el-form-item>
             <el-form-item label="图书类别">
                 <el-select v-model="searchForm.categoryId" clearable placeholder="图书分类">
-                    <el-tooltip v-for="item in categoryData" :key="item.id" class="item" effect="light" :content="item.description" placement="top">
+                    <el-tooltip v-for="item in categoryData" :key="item.id" class="item" effect="light"
+                        :content="item.description" placement="top">
                         <el-option :label="item.name" :value="item.id">
-                    </el-option>
+                        </el-option>
                     </el-tooltip>
                 </el-select>
             </el-form-item>
@@ -47,14 +48,14 @@
                 :total="bookData.total">
             </el-pagination>
         </div>
-        
+
         <!-- 页面对话框 -->
         <!-- 显示图书信息对话框 -->
         <el-dialog title="图书信息" :visible.sync="bookInfoVisible">
             <el-descriptions :column="2" border direction="vertical">
                 <el-descriptions-item>
                     <template slot="label">图书封面</template>
-                        <img :src="bookInfo.cover" alt="" style="width: 100px;">
+                    <img :src="bookInfo.cover" alt="" style="width: 100px;">
                 </el-descriptions-item>
                 <el-descriptions-item>
                     <template slot="label">图书名称</template>
@@ -147,6 +148,14 @@ export default {
                         this.$message.error(res.data.msg)
                     }
                 })
+        },
+        handleSizeChange(val) {
+            this.pageSize = val
+            this.loadData()
+        },
+        handleCurrentChange(val) {
+            this.currentPage = val
+            this.loadData()
         },
         search() {
             this.loading = true;
