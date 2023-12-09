@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/index'
+    redirect: localStorage.getItem('admin') == 1 ? '/admin' : '/user'
   },
   {
     path: '/login',
@@ -20,8 +20,8 @@ const routes = [
     component: () => import('../views/login/Register.vue')
   },
   {
-    path: '/index',
-    name: 'Index',
+    path: '/admin',
+    name: 'Admin',
     component: () => import('../views/index/Index.vue'),
     children: [
       {
@@ -30,34 +30,57 @@ const routes = [
       },
       {
         path: 'BorrowIndex',
-        component: () => import('../views/borrow/BorrowIndex.vue')
+        component: () => import('../views/AdminView/borrow/BorrowIndex.vue')
       },
       {
         path: 'BookIndex',
-        component: () => import('../views/book/BookIndex.vue')
+        component: () => import('../views/AdminView/book/BookIndex.vue')
       },
       {
         path: 'AdminIndex',
-        component: () => import('../views/admin/AdminIndex.vue')
+        component: () => import('../views/AdminView/admin/AdminIndex.vue')
       },
       {
         path: 'NoticeIndex',
-        component: () => import('../views/notice/NoticeIndex.vue')
+        component: () => import('../views/AdminView/notice/NoticeIndex.vue')
       },
       {
         path: 'ReaderIndex',
-        component: () => import('../views/reader/ReaderIndex.vue')
+        component: () => import('../views/AdminView/reader/ReaderIndex.vue')
       },
       {
         path: 'CategoryIndex',
-        component: () => import('../views/category/CategoryIndex.vue')
+        component: () => import('../views/AdminView/category/CategoryIndex.vue')
       },
       {
         path: 'StatisticsIndex',
-        component: () => import('../views/statistics/StatisticsIndex.vue')
+        component: () => import('../views/AdminView/statistics/StatisticsIndex.vue')
       }
     ]
   },
+  {
+    path: '/user',
+    name: 'User',
+    component: () => import('../views/index/Index.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('../views/index/Welcome.vue')
+      },
+      {
+        path: 'BorrowIndex',
+        component: () => import('../views/UserView/borrow/BorrowIndex.vue')
+      },
+      {
+        path: 'BookIndex',
+        component: () => import('../views/UserView/book/BookIndex.vue')
+      },
+      {
+        path: 'ReturnIndex',
+        component: () => import('../views/UserView/return/ReturnIndex.vue')
+      }
+    ]
+  }
 ]
 
 // 获取原型对象上的push函数

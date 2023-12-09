@@ -8,37 +8,37 @@
                 "title": "借阅管理",
                 "name": "BorrowIndex",
                 "icon": "el-icon-mobile",
-                "path": "/index/BorrowIndex"
+                "path": "/admin/BorrowIndex"
             },
             {
                 "title": "图书管理",
                 "name": "BookIndex",
                 "icon": "el-icon-notebook-1",
-                "path": "/index/BookIndex"
+                "path": "/admin/BookIndex"
             },
             {
                 "title": "读者管理",
                 "name": "ReaderIndex",
                 "icon": "el-icon-s-custom",
-                "path": "/index/ReaderIndex"
+                "path": "/admin/ReaderIndex"
             },
             {
                 "title": "类型管理",
                 "name": "CategoryIndex",
                 "icon": "el-icon-menu",
-                "path": "/index/CategoryIndex"
+                "path": "/admin/CategoryIndex"
             },
             {
                 "title": "公告管理",
                 "name": "NoticeIndex",
                 "icon": "el-icon-message-solid",
-                "path": "/index/NoticeIndex"
+                "path": "/admin/NoticeIndex"
             },
             {
                 "title": "管理员管理",
                 "name": "AdminIndex",
                 "icon": "el-icon-user-solid",
-                "path": "/index/AdminIndex"
+                "path": "/admin/AdminIndex"
             }
         ]
     },
@@ -51,7 +51,7 @@
                 "title": "借阅统计",
                 "name": "StatisticsIndex",
                 "icon": "el-icon-mobile",
-                "path": "/index/StatisticsIndex"
+                "path": "/admin/StatisticsIndex"
             }
         ]
     }

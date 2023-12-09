@@ -1,0 +1,27 @@
+{
+    "menuInfo": {
+        "title": "书籍管理",
+        "name": "bookManagement",
+        "icon": "el-icon-s-fold",
+        "child": [
+            {
+                "title": "书籍查询",
+                "name": "BookSearch",
+                "icon": "el-icon-mobile",
+                "path": "/user/BookSearch"
+            },
+            {
+                "title": "书籍借阅",
+                "name": "BookBorrow",
+                "icon": "el-icon-notebook-1",
+                "path": "/user/BookBorrow"
+            },
+            {
+                "title": "书籍归还",
+                "name": "BookReturn",
+                "icon": "el-icon-s-custom",
+                "path": "/admin/BookReturn"
+            }
+        ]
+    }
+}

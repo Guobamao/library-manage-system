@@ -5,13 +5,14 @@
             <el-header>
                 <el-row>
                     <el-col :span="12">
-                        <a href="/index" class="logo-title">
+                        <!-- router-link -->
+                        <router-link to="/" class="logo-title">
                             <i class="el-icon-s-home"></i>
                             <span style="margin-left: 10px">图书管理系统</span>
-                        </a>
+                        </router-link>
                     </el-col>
-                    <el-col :span="12" style="display: flex; justify-content: end">
-                        <span class="header-name">{{ username }}</span>
+                    <el-col :span="12" style="display: flex; justify-content: end; align-items: center;">
+                        <span class="header-name">欢迎您：{{ username }}</span>
                         <el-button type="danger" size="mini" @click="logout">退出登录</el-button>
                     </el-col>
                 </el-row>
@@ -54,7 +55,8 @@
 </template>
 
 <script>
-import apiData from "@/assets/init.json";
+import adminApi from "@/assets/admin.json";
+import userApi from "@/assets/user.json";
 export default {
     data() {
         return {
@@ -64,7 +66,7 @@ export default {
                 {
                     index: "HomePage",
                     tabName: "首页",
-                    path: "/index",
+                    path: "/",
                     isClosable: false
                 }
             ]
@@ -133,7 +135,7 @@ export default {
     created() {
         this.username = localStorage.getItem("username");
         this.adminType = localStorage.getItem("adminType");
-        this.apiData = apiData;
+        this.apiData = localStorage.getItem('admin') ? adminApi : userApi; // 判断是否为管理员,加载不同的菜单栏
         this.currentTabIndex = sessionStorage.getItem("currentTabIndex") || "HomePage";
         this.tabs = sessionStorage.getItem("tabs") ? JSON.parse(sessionStorage.getItem("tabs")) : this.tabs;
     }
