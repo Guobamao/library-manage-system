@@ -18,7 +18,8 @@
                                     style="vertical-align: middle;"></el-avatar>
                             </div>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="/user/info" v-if="this.isAdmin === 'false'">个人中心</el-dropdown-item>
+                                <el-dropdown-item command="/user/info"
+                                    v-if="this.isAdmin === 'false'">个人中心</el-dropdown-item>
                                 <el-dropdown-item command="CardInfo" v-if="this.isAdmin === 'false'">借书卡</el-dropdown-item>
                                 <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                             </el-dropdown-menu>
@@ -96,10 +97,36 @@
             </el-dialog>
 
             <!-- 抽屉 -->
-            <el-drawer title="我是标题" :visible.sync="drawerVisible" :with-header="false">
+            <el-drawer :visible.sync="drawerVisible" :with-header="false" :before-close="refreshBadge">
                 <el-collapse accordion style="margin: 20px;">
                     <el-collapse-item title="待处理借阅图书">
-                        // TODO: 待处理借阅图书
+                        <el-table :data="bookBorrowData" border size="small">
+                            <el-table-column prop="readerName" label="姓名" :show-overflow-tooltip="true">
+                                <template slot-scope="scope">
+                                    {{ scope.row.readerName ? scope.row.readerName : "未填写" }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="bookName" label="图书名称" :show-overflow-tooltip="true"></el-table-column>
+                            <el-table-column prop="type" label="类型">
+                                <template slot-scope="scope">
+                                    {{ scope.row.type === 0 ? "借阅" : "归还" }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="borrowTime" label="申请时间" :show-overflow-tooltip="true"></el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button type="primary" size="mini" @click="bookPass(scope.row)">
+                                        <i class="el-icon-check"></i>
+                                        通过
+                                    </el-button>
+                                    <br>
+                                    <el-button type="danger" size="mini" @click="bookReject(scope.row)">
+                                        <i class="el-icon-close"></i>
+                                        驳回
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                     </el-collapse-item>
                     <el-collapse-item title="待处理借书卡申请">
                         <el-table :data="cardApplyData" border size="small">
@@ -109,7 +136,7 @@
                                     {{ scope.row.name ? scope.row.name : "未填写" }}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="applyTime" label="申请事件"></el-table-column>
+                            <el-table-column prop="applyTime" label="申请时间"></el-table-column>
                             <el-table-column prop="type" label="类型">
                                 <template slot-scope="scope">
                                     {{ scope.row.type === 0 ? "申请" : "挂失" }}
@@ -117,12 +144,12 @@
                             </el-table-column>
                             <el-table-column label="操作">
                                 <template slot-scope="scope">
-                                    <el-button type="primary" size="mini" @click="pass(scope.row)">
+                                    <el-button type="primary" size="mini" @click="cardPass(scope.row)">
                                         <i class="el-icon-check"></i>
                                         通过
                                     </el-button>
                                     <br>
-                                    <el-button type="danger" size="mini" @click="reject(scope.row)">
+                                    <el-button type="danger" size="mini" @click="cardReject(scope.row)">
                                         <i class="el-icon-close"></i>
                                         驳回
                                     </el-button>
@@ -140,8 +167,8 @@
 import adminApi from "@/assets/admin.json";
 import userApi from "@/assets/user.json";
 import { adminRequest, userRequest } from "@/api";
-import userMethods from '@/api/admin/index'
-import adminMethods from '@/api/user/index'
+import adminMethods from '@/api/admin/index'
+import userMethods from '@/api/user/index'
 export default {
     data() {
         return {

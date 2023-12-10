@@ -37,7 +37,7 @@
             <el-table-column label="语言" prop="language" width="150"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button type="primary" plain size="mini" @click="borrowBook(scope.row)">借阅</el-button>
+                    <el-button type="primary" plain size="mini" @click="bookBorrow(scope.row)">借阅</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -189,6 +189,19 @@ export default {
                 })
             this.bookInfoVisible = true;
         },
+        // 申请借阅图书
+        bookBorrow(row) {
+            userRequest.post("/user/book/borrow", {
+                bookId: row.id
+            }).then(res => {
+                if (res.data.code === 1) {
+                    this.$message.success("申请成功");
+                    // TODO: 跳转到申请记录页面
+                } else {
+                    this.$message.error(res.data.msg);
+                }
+            })
+        }
 
     },
     created() {
