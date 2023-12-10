@@ -18,8 +18,8 @@
                                     style="vertical-align: middle;"></el-avatar>
                             </div>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="/user/info">个人中心</el-dropdown-item>
-                                <el-dropdown-item command="applyCard">借书卡</el-dropdown-item>
+                                <el-dropdown-item command="/user/info" v-if="this.isAdmin === 'false'">个人中心</el-dropdown-item>
+                                <el-dropdown-item command="CardInfo" v-if="this.isAdmin === 'false'">借书卡</el-dropdown-item>
                                 <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -59,20 +59,79 @@
                     <el-container>
                         <router-view />
                     </el-container>
+                    <el-badge v-if="isAdmin == 'true'" :hidden="unsolvedCount <= 0" :value="unsolvedCount" class="item"
+                        style="position: absolute; right: 4%; top: 10%;">
+                        <el-button size="small" @click="showUnsolvedDialog">待处理</el-button>
+                    </el-badge>
                 </el-main>
             </el-container>
             <!-- 对话框 -->
-            <el-dialog title="图书卡申请进度" :visible.sync="applyCardDialogVisible" width="30%">
-                <el-steps :active="applyCardStatus" align-center finish-status="success">
-                    <el-step title="提交申请"></el-step>
-                    <el-step title="管理员审核"></el-step>
-                    <el-step title="申请成功"></el-step>
-                </el-steps>
+            <el-dialog title="借书卡信息" :visible.sync="cardInfoDialogVisible" center width="30rem">
+                <!-- 有借书卡则显示信息 -->
+                <el-descriptions :column="2">
+                    <el-descriptions-item label="借书卡号">{{ cardInfo.cardNumber }}</el-descriptions-item>
+                    <el-descriptions-item label="姓名">{{ cardInfo.readerName ? cardInfo.readerName : '未设置'
+                    }}</el-descriptions-item>
+                    <el-descriptions-item label="发放时间">{{ cardInfo.createTime }}</el-descriptions-item>
+                    <el-descriptions-item label="状态">{{ cardInfo.status === 1 ? '正常' : '挂失' }}</el-descriptions-item>
+                </el-descriptions>
                 <span slot="footer" class="dialog-footer">
-                    <el-button @click="applyCardDialogVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="applyCardDialogVisible = false" size="small">确 定</el-button>
+                    <el-button type="danger" @click="cardReport" size="small">挂失</el-button>
+                    <el-button v-if="cardInfo.status === 2" type="primary" @click="showApplyStatus"
+                        size="small">申请进度</el-button>
+                    <el-button type="primary" @click="cardInfoDialogVisible = false" size="small">确定</el-button>
                 </span>
             </el-dialog>
+            <el-dialog title="图书卡申请进度" :visible.sync="applyCardDialogVisible" width="40rem">
+                <el-steps :active="applyCardStatus.status + 1" align-center finish-status="success">
+                    <el-step title="提交申请" :description="applyCardStatus.applyTime"></el-step>
+                    <el-step title="管理员审核"
+                        :description="applyCardStatus.status === 0 ? '' : applyCardStatus.handleTime"></el-step>
+                    <el-step title="申请成功"
+                        :description="applyCardStatus.status === 0 ? '' : applyCardStatus.handleTime"></el-step>
+                </el-steps>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="applyCardDialogVisible = false" size="small">确定</el-button>
+                </span>
+            </el-dialog>
+
+            <!-- 抽屉 -->
+            <el-drawer title="我是标题" :visible.sync="drawerVisible" :with-header="false">
+                <el-collapse accordion style="margin: 20px;">
+                    <el-collapse-item title="待处理借阅图书">
+                        // TODO: 待处理借阅图书
+                    </el-collapse-item>
+                    <el-collapse-item title="待处理借书卡申请">
+                        <el-table :data="cardApplyData" border size="small">
+                            <el-table-column prop="readerId" label="读者ID"></el-table-column>
+                            <el-table-column prop="name" label="姓名">
+                                <template slot-scope="scope">
+                                    {{ scope.row.name ? scope.row.name : "未填写" }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="applyTime" label="申请事件"></el-table-column>
+                            <el-table-column prop="type" label="类型">
+                                <template slot-scope="scope">
+                                    {{ scope.row.type === 0 ? "申请" : "挂失" }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button type="primary" size="mini" @click="pass(scope.row)">
+                                        <i class="el-icon-check"></i>
+                                        通过
+                                    </el-button>
+                                    <br>
+                                    <el-button type="danger" size="mini" @click="reject(scope.row)">
+                                        <i class="el-icon-close"></i>
+                                        驳回
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-collapse-item>
+                </el-collapse>
+            </el-drawer>
         </el-container>
     </div>
 </template>
@@ -80,7 +139,9 @@
 <script>
 import adminApi from "@/assets/admin.json";
 import userApi from "@/assets/user.json";
-import { adminRequest, userRequest } from "@/api/api";
+import { adminRequest, userRequest } from "@/api";
+import userMethods from '@/api/admin/index'
+import adminMethods from '@/api/user/index'
 export default {
     data() {
         return {
@@ -94,11 +155,20 @@ export default {
                     isClosable: false
                 }
             ],
+            cardInfoDialogVisible: false, // 借书卡信息对话框
+            cardInfo: {}, // 借书卡信息
             applyCardDialogVisible: false, // 申请借书卡对话框
-            applyCardStatus: 0, // 申请借书卡状态
+            applyCardStatus: [], // 申请借书卡状态
+            drawerVisible: false, // 抽屉
+            unsolvedCount: 0, // 待处理的消息数量
+            cardApplyData: [], // 借书卡申请数据
+            bookBorrowData: [] // 图书借阅数据
         }
     },
     methods: {
+        // 导入方法
+        ...adminMethods,
+        ...userMethods,
         // 退出登录
         logout() {
             if (localStorage.getItem('isAdmin' === 1)) {
@@ -107,6 +177,7 @@ export default {
                         this.$message.success("退出登录成功");
                         this.$router.push("/login");
                         localStorage.clear();
+                        sessionStorage.clear();
                     }
                 });
             } else {
@@ -115,6 +186,7 @@ export default {
                         this.$message.success("退出登录成功");
                         this.$router.push("/login");
                         localStorage.clear();
+                        sessionStorage.clear();
                     }
                 });
             }
@@ -168,52 +240,12 @@ export default {
         handleMenuCommand(command) {
             if (command === "logout") {
                 this.logout();
-            } else if (command === "applyCard") {
-                this.applyCard();
+            } else if (command === "CardInfo") {
+                this.showCardInfo();
+                console.log("CardInfo");
             } else {
                 window.open(command, "_blank")
             }
-        },
-        applyCard() {
-            userRequest.post("/card/apply")
-                .then(res => {
-                    if (res.data.code === 1) {
-                        this.$message.success("申请成功，请等待管理员审核");
-                    } else {
-                        if (res.data.msg === "已有借书卡") {
-                            this.$confirm("您已有借书卡，是否挂失？", "提示", {
-                                confirmButtonText: "确定",
-                                cancelButtonText: "取消",
-                                type: "warning"
-                            }).then(() => {
-                                userRequest.post('/card/report')
-                                    .then(res => {
-                                        if (res.data.code === 1) {
-                                            this.$message.success("挂失成功");
-                                        } else {
-                                            this.$message.error(res.data.msg)
-                                        }
-                                    })
-                            }).catch(() => { })
-                        } else if (res.data.msg === "已申请，请勿重复申请") {
-                            this.$confirm("已申请借书卡，是否查看申请进度？", "提示", {
-                                confirmButtonText: "确定",
-                                cancelButtonText: "取消",
-                                type: "warning"
-                            }).then(() => {
-                                userRequest.get('/card/status')
-                                    .then(res => {
-                                        if (res.data.code === 1) {
-                                            this.applyCardStatus = res.data.data.status + 1;
-                                            this.applyCardDialogVisible = true;
-                                        } else {
-                                            this.$message.error(res.data.msg)
-                                        }
-                                    })
-                            }).catch(() => { })
-                        }
-                    }
-                })
         }
     },
     mounted() {
@@ -221,9 +253,13 @@ export default {
     created() {
         this.username = localStorage.getItem("username");
         this.adminType = localStorage.getItem("adminType");
-        this.apiData = localStorage.getItem('isAdmin') === 'true' ? adminApi : userApi; // 判断是否为管理员,加载不同的菜单栏
+        this.isAdmin = localStorage.getItem("isAdmin");
+        this.apiData = this.isAdmin === 'true' ? adminApi : userApi; // 判断是否为管理员,加载不同的菜单栏
         this.currentTabIndex = sessionStorage.getItem("currentTabIndex") || "HomePage";
         this.tabs = sessionStorage.getItem("tabs") ? JSON.parse(sessionStorage.getItem("tabs")) : this.tabs;
+        if (this.isAdmin === 'true') {
+            this.getUnsolvedCount();
+        }
     }
 }
 </script>

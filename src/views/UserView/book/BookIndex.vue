@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { userRequest } from '@/api/api';
+import { userRequest } from '@/api';
 export default {
     data() {
         return {

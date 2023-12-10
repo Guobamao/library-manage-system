@@ -50,7 +50,7 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="生日" required>
-                        <el-date-picker v-model="userInfo.birthday" type="date" placeholder="选择日期"></el-date-picker>
+                        <el-date-picker v-model="userInfo.birthday" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
                     </el-form-item>
                     <el-form-item label="邮箱">
                         <el-input v-model="userInfo.email"></el-input>
@@ -66,7 +66,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">修改</el-button>
-                        <el-button>取消</el-button>
+                        <el-button @click="close">取消</el-button>
                     </el-form-item>
                 </el-form>
             </el-card>
@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import { userRequest } from '@/api/api'
+import { userRequest } from '@/api'
 export default {
     data() {
         return {
@@ -131,6 +131,11 @@ export default {
                     }
                 })
         },
+        close() {
+            var opened = window.open('about:blank', '_self');
+            opened.opener = null;
+            opened.close(); 
+        }
 
     },
     created() {

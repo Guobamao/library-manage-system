@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { Message } from 'element-ui'
 import axios from 'axios'
-
 Vue.use(VueRouter)
 
 const routes = [
@@ -11,7 +11,7 @@ const routes = [
   },
   {
     path: '/login',
-    name:'Login',
+    name: 'Login',
     component: () => import('../views/login/Login.vue')
   },
   {
@@ -22,6 +22,7 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
+    meta: { requiresAdmin: true, requiresAuth: true }, // 需要管理员权限，需要登录
     component: () => import('../views/index/Index.vue'),
     children: [
       {
@@ -61,6 +62,7 @@ const routes = [
   {
     path: '/user',
     name: 'User',
+    meta: { requiresAuth: true }, // 需要登录
     component: () => import('../views/index/Index.vue'),
     children: [
       {
@@ -84,6 +86,7 @@ const routes = [
   {
     path: '/user/info',
     name: 'UserInfo',
+    meta: { requiresAuth: true }, // 需要登录
     component: () => import('../views/UserView/userInfo/UserInfoIndex.vue')
   }
 ]
@@ -103,33 +106,20 @@ const router = new VueRouter({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const token = localStorage.getItem('token')
-  if (!token && to.path !== '/login' && to.path !== '/register') {
-    // 删除localStorage的信息
-    localStorage.clear()
-
-    // 跳转到登录页面
+  if (requiresAuth && !token) {
+    Message.error('请先登录')
     next('/login')
+  } else if (requiresAdmin && !isAdmin) {
+    Message.error('您不是管理员，无法访问')
+    next('/user')
   } else {
     axios.defaults.headers.common['Token'] = token
     next()
   }
 })
-
-// 添加axios的响应拦截器
-axios.interceptors.response.use(
-  response => {
-    return response
-  },
-  error => {
-    if (error.response && error.response.status === 401) {
-      // 删除localStorage的信息
-      localStorage.clear()
-      // 跳转到登录页面
-      router.push('/login')
-    }
-    return Promise.reject(error)
-  }
-)
 
 export default router

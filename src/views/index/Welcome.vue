@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { adminRequest } from '@/api/api'
+import { adminRequest, userRequest } from '@/api'
 export default {
   data() {
     return {
@@ -26,21 +26,39 @@ export default {
   methods: {
     loadData() {
       this.loading = true
-      adminRequest.get("/notice/page", {
-        params: {
-          page: 1,
-          pageSize: 5
-        }
-      }).then(res => {
-        if (res.data.code === 1) {
-          this.noticeData = res.data.data
-          setTimeout(() => {
-            this.loading = false
-          }, this.loadingTime)
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      })
+      if (localStorage.getItem('isAdmin') === 'true') {
+        adminRequest.get("/notice/page", {
+          params: {
+            page: 1,
+            pageSize: 5
+          }
+        }).then(res => {
+          if (res.data.code === 1) {
+            this.noticeData = res.data.data
+            setTimeout(() => {
+              this.loading = false
+            }, this.loadingTime)
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+      } else {
+        userRequest.get("/user/notice/page", {
+          params: {
+            page: 1,
+            pageSize: 5
+          }
+        }).then(res => {
+          if (res.data.code === 1) {
+            this.noticeData = res.data.data
+            setTimeout(() => {
+              this.loading = false
+            }, this.loadingTime)
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+      }
     },
     showInfo(item) {
       this.$alert(item.content, "公告内容", {
@@ -52,6 +70,8 @@ export default {
   },
   mounted() {
     this.loadData()
+  },
+  created() {
   }
 }
 </script>

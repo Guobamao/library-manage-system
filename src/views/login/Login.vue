@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { adminRequest, userRequest } from '@/api/api'
+import { adminRequest, userRequest } from '@/api'
 export default {
     data() {
         return {

@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { adminRequest } from '@/api/api';
+import { adminRequest } from '@/api';
 export default {
     data() {
         return {
