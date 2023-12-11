@@ -60,8 +60,8 @@
                     <el-container>
                         <router-view />
                     </el-container>
-                    <el-badge v-if="isAdmin == 'true'" :hidden="unsolvedCount <= 0" :value="unsolvedCount" class="item"
-                        style="position: absolute; right: 4%; top: 8%; border: none;">
+                    <el-badge v-if="isAdmin == 'true'" :hidden="unsolvedCount <= 0" :value="unsolvedCount"
+                        style="position: absolute; right: 4rem; top: 5rem; border: none;">
                         <el-button size="small" @click="showUnsolvedDialog">待处理</el-button>
                     </el-badge>
                 </el-main>
@@ -99,7 +99,7 @@
             <!-- 抽屉 -->
             <el-drawer :visible.sync="drawerVisible" :with-header="false" :before-close="refreshBadge">
                 <el-collapse accordion style="margin: 20px;">
-                    <el-collapse-item title="待处理借阅图书">
+                    <el-collapse-item title="待处理图书申请">
                         <el-table :data="bookBorrowData" border size="small">
                             <el-table-column prop="readerName" label="姓名" :show-overflow-tooltip="true">
                                 <template slot-scope="scope">

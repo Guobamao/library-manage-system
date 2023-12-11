@@ -11,22 +11,16 @@
                 "path": "/user/BookIndex"
             },
             {
-                "title": "书籍借阅",
-                "name": "BorrowIndex",
-                "icon": "el-icon-notebook-1",
-                "path": "/user/BorrowIndex"
+                "title": "借阅记录",
+                "name": "RecordIndex",
+                "icon": "el-icon-s-order",
+                "path": "/user/RecordIndex"
             },
             {
                 "title": "书籍归还",
                 "name": "ReturnIndex",
                 "icon": "el-icon-s-custom",
                 "path": "/user/ReturnIndex"
-            },
-            {
-                "title": "借阅记录",
-                "name": "BorrowRecord",
-                "icon": "el-icon-s-order",
-                "path": "/user/BorrowRecord"
             }
         ]
     }

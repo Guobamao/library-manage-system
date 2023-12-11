@@ -68,16 +68,16 @@ const routes = [
         component: () => import('../views/index/Welcome.vue')
       },
       {
-        path: 'BorrowIndex',
-        component: () => import('../views/UserView/borrow/BorrowIndex.vue')
-      },
-      {
         path: 'BookIndex',
         component: () => import('../views/UserView/book/BookIndex.vue')
       },
       {
         path: 'ReturnIndex',
         component: () => import('../views/UserView/return/ReturnIndex.vue')
+      },
+      {
+        path: 'RecordIndex',
+        component: () => import('../views/UserView/record/RecordIndex.vue')
       }
     ]
   },
