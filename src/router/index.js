@@ -21,7 +21,6 @@ const routes = [
   },
   {
     path: '/admin',
-    name: 'Admin',
     meta: { requiresAdmin: true, requiresAuth: true }, // 需要管理员权限，需要登录
     component: () => import('../views/index/Index.vue'),
     children: [
@@ -61,7 +60,6 @@ const routes = [
   },
   {
     path: '/user',
-    name: 'User',
     meta: { requiresAuth: true }, // 需要登录
     component: () => import('../views/index/Index.vue'),
     children: [
@@ -121,5 +119,8 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
+
+// 添加axios的响应拦截器
+
 
 export default router

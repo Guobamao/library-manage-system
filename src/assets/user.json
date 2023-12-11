@@ -21,6 +21,12 @@
                 "name": "ReturnIndex",
                 "icon": "el-icon-s-custom",
                 "path": "/user/ReturnIndex"
+            },
+            {
+                "title": "借阅记录",
+                "name": "BorrowRecord",
+                "icon": "el-icon-s-order",
+                "path": "/user/BorrowRecord"
             }
         ]
     }

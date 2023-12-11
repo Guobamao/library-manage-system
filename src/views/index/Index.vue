@@ -61,7 +61,7 @@
                         <router-view />
                     </el-container>
                     <el-badge v-if="isAdmin == 'true'" :hidden="unsolvedCount <= 0" :value="unsolvedCount" class="item"
-                        style="position: absolute; right: 4%; top: 10%;">
+                        style="position: absolute; right: 4%; top: 8%; border: none;">
                         <el-button size="small" @click="showUnsolvedDialog">待处理</el-button>
                     </el-badge>
                 </el-main>
