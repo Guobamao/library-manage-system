@@ -120,7 +120,4 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-// 添加axios的响应拦截器
-
-
 export default router

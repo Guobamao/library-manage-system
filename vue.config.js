@@ -5,11 +5,12 @@ module.exports = defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:8088',
-        changeOrigin: true,
+        changeOrigin: true, // 是否跨域
         pathRewrite: {
-          '^/api': ''
+          '^/api': '/api'
         }
       }
     }
   }
 })
+

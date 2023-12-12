@@ -264,7 +264,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            adminRequest.get('/book/page', {
+            adminRequest.get('/books', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -279,7 +279,7 @@ export default {
                     this.$message.error(res.data.msg);
                 }
             });
-            adminRequest.get('/category/page')
+            adminRequest.get('/categories')
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.categoryData = res.data.data;
@@ -301,7 +301,7 @@ export default {
         },
         search() {
             this.loading = true
-            adminRequest.get('/book/page', {
+            adminRequest.get('/books', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -321,7 +321,7 @@ export default {
             })
         },
         addBook() {
-            adminRequest.post('/book', this.addForm)
+            adminRequest.post('/books', this.addForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("添加成功");
@@ -338,7 +338,7 @@ export default {
             this.editForm = row;
         },
         submitInfo() {
-            adminRequest.put('/book', this.editForm)
+            adminRequest.put('/books', this.editForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功");
@@ -355,7 +355,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                adminRequest.delete('/book/' + row.id)
+                adminRequest.delete('/books/' + row.id)
                     .then((res) => {
                         if (res.data.code === 1) {
                             this.$message.success("删除成功");
@@ -367,7 +367,7 @@ export default {
             }).catch(() => { });
         },
         getBookInfo(row) {
-            adminRequest.get('/book/' + row.id)
+            adminRequest.get('/books/' + row.id)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.bookInfo = res.data.data;

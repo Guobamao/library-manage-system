@@ -3,7 +3,7 @@ import router from "./router";
 
 // 创建后台管理端的axios实例
 const adminRequest = axios.create({
-    baseURL: 'http://localhost:8088/admin',
+    baseURL: 'http://localhost:8088/api/admin',
     timeout: 5000,
 })
 
@@ -17,13 +17,13 @@ adminRequest.interceptors.request.use(config => {
     return Promise.reject(error);
 })
 adminRequest.interceptors.response.use(response => {
-    if (response.status === 401) {
+    return response;
+}, error => {
+    if (error.response && error.response.status === 401) {
         alert('登录过期，请重新登录')
         localStorage.clear()
         router.replace('/login')
     }
-    return response;
-}, error => {
     console.log("error:" + error)
     return Promise.reject(error);
 })
@@ -44,13 +44,13 @@ userRequest.interceptors.request.use(config => {
     return Promise.reject(error);
 })
 userRequest.interceptors.response.use(response => {
-    if (response.status === 401) {
+    return response;
+}, error => {
+    if (error.response && error.response.status === 401) {
         alert('登录过期，请重新登录')
         localStorage.clear()
         router.replace('/login')
     }
-    return response;
-}, error => {
     console.log("error:" + error)
     return Promise.reject(error);
 })

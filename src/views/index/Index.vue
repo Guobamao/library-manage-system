@@ -60,10 +60,10 @@
                     <el-container>
                         <router-view />
                     </el-container>
-                    <el-badge v-if="isAdmin == 'true'" :hidden="unsolvedCount <= 0" :value="unsolvedCount"
+                    <!-- <el-badge v-if="isAdmin == 'true'" :hidden="unsolvedCount <= 0" :value="unsolvedCount"
                         style="position: absolute; right: 4rem; top: 5rem; border: none;">
                         <el-button size="small" @click="showUnsolvedDialog">待处理</el-button>
-                    </el-badge>
+                    </el-badge> -->
                 </el-main>
             </el-container>
             <!-- 对话框 -->
@@ -97,7 +97,7 @@
             </el-dialog>
 
             <!-- 抽屉 -->
-            <el-drawer :visible.sync="drawerVisible" :with-header="false" :before-close="refreshBadge">
+            <!-- <el-drawer :visible.sync="drawerVisible" :with-header="false" :before-close="refreshBadge">
                 <el-collapse accordion style="margin: 20px;">
                     <el-collapse-item title="待处理图书申请">
                         <el-table :data="bookBorrowData" border size="small">
@@ -158,7 +158,7 @@
                         </el-table>
                     </el-collapse-item>
                 </el-collapse>
-            </el-drawer>
+            </el-drawer> -->
         </el-container>
     </div>
 </template>
@@ -199,7 +199,7 @@ export default {
         // 退出登录
         logout() {
             if (localStorage.getItem('isAdmin' === 1)) {
-                adminRequest.post("/admin/logout").then(res => {
+                adminRequest.post("/logout").then(res => {
                     if (res.data.code === 1) {
                         this.$message.success("退出登录成功");
                         this.$router.push("/login");
@@ -284,9 +284,9 @@ export default {
         this.apiData = this.isAdmin === 'true' ? adminApi : userApi; // 判断是否为管理员,加载不同的菜单栏
         this.currentTabIndex = sessionStorage.getItem("currentTabIndex") || "HomePage";
         this.tabs = sessionStorage.getItem("tabs") ? JSON.parse(sessionStorage.getItem("tabs")) : this.tabs;
-        if (this.isAdmin === 'true') {
+        /* if (this.isAdmin === 'true') {
             this.getUnsolvedCount();
-        }
+        } */
     }
 }
 </script>

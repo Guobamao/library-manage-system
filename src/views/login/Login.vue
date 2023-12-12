@@ -59,7 +59,7 @@ export default {
                 if (valid) {
                     // 管理员登录
                     if (this.loginForm.loginType === '1') {
-                        adminRequest.post('/admin/login', {
+                        adminRequest.post('/login', {
                             username: this.loginForm.username,
                             password: this.loginForm.password,
                         }).then(res => {

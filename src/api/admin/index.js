@@ -3,7 +3,7 @@ import { adminRequest } from "@/api";
 export default {
     // 获取待处理的消息数量
     getUnsolvedCount() {
-        adminRequest.get("/message/count")
+        adminRequest.get("/messages")
             .then(res => {
                 if (res.data.code === 1) {
                     this.unsolvedCount = res.data.data;

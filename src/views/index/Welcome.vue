@@ -27,7 +27,7 @@ export default {
     loadData() {
       this.loading = true
       if (localStorage.getItem('isAdmin') === 'true') {
-        adminRequest.get("/notice/page", {
+        adminRequest.get("/notices", {
           params: {
             page: 1,
             pageSize: 5

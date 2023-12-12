@@ -80,23 +80,23 @@
         <!-- 编辑管理员对话框 -->
         <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="30rem">
             <el-form :model="editForm">
-                <el-form-item label="用户名" label-width="20%">
+                <el-form-item label="用户名" label-width="6rem" required>
                     <el-input v-model="editForm.username" autocomplete="off" placeholder="请输入用户名"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" label-width="20%">
+                <el-form-item label="密码" label-width="6rem">
                     <el-input v-model="editForm.password" autocomplete="off" placeholder="请输入新密码"></el-input>
                 </el-form-item>
-                <el-form-item label="姓名" label-width="20%">
+                <el-form-item label="姓名" label-width="6rem" required>
                     <el-input v-model="editForm.name" autocomplete="off" placeholder="请输入姓名"></el-input>
                 </el-form-item>
-                <el-form-item label="联系方式" label-width="20%">
+                <el-form-item label="联系方式" label-width="6rem" required>
                     <el-input v-model="editForm.phone" autocomplete="off" placeholder="请输入联系方式"></el-input>
                 </el-form-item>
-                <el-form-item label="电子邮箱" label-width="20%">
+                <el-form-item label="电子邮箱" label-width="6rem">
                     <el-input v-model="editForm.email" autocomplete="off" placeholder="请输入电子邮箱"></el-input>
                 </el-form-item>
-                <el-form-item label="管理员类型" label-width="20%">
-                    <el-select v-model="editForm.adminType" placeholder="请选择管理员类型" style="width: calc(30rem - 36%);">
+                <el-form-item label="管理员类型" label-width="6rem" required>
+                    <el-select v-model="editForm.adminType" placeholder="请选择管理员类型" style="width: 21.5rem;">
                         <el-option label="普通管理员" value=0></el-option>
                         <el-option label="高级管理员" value=1></el-option>
                     </el-select>
@@ -104,7 +104,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="editFormVisible = false" size="small">取 消</el-button>
-                <el-button type="primary" @click="submitInfo" size="small">确 定</el-button>
+                <el-button type="primary" @click="submitInfo(editForm.id)" size="small">确 定</el-button>
             </div>
         </el-dialog>
     </el-container>
@@ -146,7 +146,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            adminRequest.get('/admin/page', {
+            adminRequest.get('/admins', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize
@@ -163,7 +163,7 @@ export default {
             })
         },
         getAdminInfo(row) {
-            adminRequest.get('/admin/' + row.id)
+            adminRequest.get('/admins/' + row.id)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$msgbox({
@@ -184,7 +184,7 @@ export default {
         },
         search() {
             this.loading = true
-            adminRequest.get('/admin/page', {
+            adminRequest.get('/admins', {
                 params: {
                     username: this.searchForm.username,
                     adminType: this.searchForm.adminType
@@ -224,7 +224,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                adminRequest.delete('/admin/' + row.id)
+                adminRequest.delete('/admins/' + row.id)
                     .then(res => {
                         if (res.data.code === 1) {
                             this.$message.success('删除成功')
@@ -236,7 +236,7 @@ export default {
             }).catch(() => { })
         },
         addAdmin() {
-            adminRequest.post('/admin', this.addForm).then(res => {
+            adminRequest.post('/admins', this.addForm).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success('添加成功')
                     this.loadData()
@@ -252,8 +252,8 @@ export default {
             this.editForm.password = ''
             this.editForm.adminType = row.adminType.toString()
         },
-        submitInfo() {
-            adminRequest.put('/admin', this.editForm).then(res => {
+        submitInfo(adminId) {
+            adminRequest.put('/admins/' + adminId, this.editForm).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success('修改成功')
                     this.loadData()
