@@ -208,7 +208,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="editFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitInfo">确 定</el-button>
+                <el-button type="primary" @click="submitInfo(editForm.id)">确 定</el-button>
             </div>
         </el-dialog>
     </el-container>
@@ -337,8 +337,8 @@ export default {
             this.editFormVisible = true;
             this.editForm = row;
         },
-        submitInfo() {
-            adminRequest.put('/books', this.editForm)
+        submitInfo(bookId) {
+            adminRequest.put('/books/' + bookId, this.editForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功");
