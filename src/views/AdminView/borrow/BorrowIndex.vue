@@ -2,13 +2,13 @@
     <el-container v-loading="loading" style="display: flex; flex-direction: column;">
         <el-form :model="searchForm" size="small" :inline="true">
             <el-form-item label="借书卡号">
-                <el-input v-model="searchForm.readerNumber" placeholder="借书卡号"></el-input>
+                <el-input v-model="searchForm.readerNumber" placeholder="借书卡号" clearable></el-input>
             </el-form-item>
             <el-form-item label="图书名称">
-                <el-input v-model="searchForm.bookName" placeholder="图书名称"></el-input>
+                <el-input v-model="searchForm.bookName" placeholder="图书名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="借书人">
-                <el-input v-model="searchForm.readerName" placeholder="借书人"></el-input>
+                <el-input v-model="searchForm.readerName" placeholder="借书人" clearable></el-input>
             </el-form-item>
             <el-form-item label="图书状态">
                 <el-select v-model="searchForm.status" placeholder="图书状态" clearable>
@@ -70,14 +70,17 @@
                     <el-radio :label="false">倒序</el-radio>
                 </el-radio-group>
             </div>
-            <el-timeline :reverse="reverse" style="margin-top: 20px;">
+            <el-timeline :reverse="reverse" style="margin-top: 20px; max-height: 300px; overflow: auto;">
                 <el-timeline-item v-for="(item, index) in timelineData" :key="index" :timestamp="item.timestamp"
                     :type="item.color">
                     <p v-if="item.returned">
+                        <el-link type="primary" :underline="false" style="vertical-align: baseline !important;">
+                            {{ item.readerName }}
+                        </el-link>
+                        已归还
                         <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
                             {{ item.bookName }}
                         </el-link>
-                        已归还
                     </p>
                     <p v-else>
                         <el-link type="danger" :underline="false" style="vertical-align: baseline !important;">
@@ -97,7 +100,7 @@
         </el-dialog>
 
         <!-- 读者借阅历史对话框 -->
-        <el-dialog title="借阅历史" :visible.sync="readerHistoryVisible" width="30%">
+        <el-dialog :title="historyTitle" :visible.sync="readerHistoryVisible" width="30%">
             <div class="radio">
                 排序：
                 <el-radio-group v-model="reverse">
@@ -105,7 +108,7 @@
                     <el-radio :label="false">倒序</el-radio>
                 </el-radio-group>
             </div>
-            <el-timeline :reverse="reverse" style="margin-top: 20px;">
+            <el-timeline :reverse="reverse" style="margin-top: 20px; max-height: 300px; overflow: auto;">
                 <el-timeline-item v-for="(item, index) in readerHistoryData" :key="index" :timestamp="item.timestamp"
                     :type="item.color">
                     <p v-if="item.returned">
@@ -115,9 +118,6 @@
                         已归还
                     </p>
                     <p v-else>
-                        <el-link type="danger" :underline="false" style="vertical-align: baseline !important;">
-                            {{ item.readerName }}
-                        </el-link>
                         借阅了
                         <el-link type="success" :underline="false" style="vertical-align: baseline !important;">
                             {{ item.bookName }}
@@ -168,7 +168,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="editFormVisible = false" size="small">取 消</el-button>
-                <el-button type="primary" @click="submitInfo" size="small">确 定</el-button>
+                <el-button type="primary" @click="submitInfo(editForm.id)" size="small">确 定</el-button>
             </div>
         </el-dialog>
     </el-container>
@@ -192,6 +192,7 @@ export default {
             readerHistoryVisible: false, // 读者借阅历史弹窗
             timelineData: [], // 时间线数据
             readerHistoryData: [], // 读者借阅历史数据
+            historyTitle: '', // 读者借阅历史标题
             reverse: true, // 时间线排序
             editFormVisible: false, // 编辑弹窗
             editForm: {
@@ -213,7 +214,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            adminRequest.get("/borrow/page", {
+            adminRequest.get("/borrows", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -231,7 +232,7 @@ export default {
         },
         search() {
             this.loading = true
-            adminRequest.get("/borrow/page", {
+            adminRequest.get("/borrows", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -260,11 +261,7 @@ export default {
             this.loadData()
         },
         showBookTimeline(item) {
-            adminRequest.get('/borrow/timeline', {
-                params: {
-                    bookId: item.bookId
-                }
-            }).then(res => {
+            adminRequest.get('/borrows/' + item.bookId + '/timeline').then(res => {
                 if (res.data.code === 1) {
                     this.timelineData = res.data.data
                 } else {
@@ -274,13 +271,10 @@ export default {
             this.bookDetailVisible = true
         },
         showReaderHistory(item) {
-            adminRequest.get('/borrow/history', {
-                params: {
-                    readerId: item.readerId
-                }
-            }).then(res => {
+            adminRequest.get('/borrows/' + item.readerId + '/history').then(res => {
                 if (res.data.code === 1) {
                     this.readerHistoryData = res.data.data
+                    this.historyTitle = item.readerName + '的借阅历史'
                 } else {
                     this.$message.error(res.data.msg)
                 }
@@ -293,7 +287,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                adminRequest.delete('/borrow/' + item.id).then(res => {
+                adminRequest.delete('/borrows/' + item.id).then(res => {
                     if (res.data.code === 1) {
                         this.$message.success("删除成功")
                         this.loadData()
@@ -308,8 +302,8 @@ export default {
             this.editForm = row
             this.editForm.status = row.status.toString()
         },
-        submitInfo() {
-            adminRequest.put('/borrow', this.editForm).then(res => {
+        submitInfo(borrowId) {
+            adminRequest.put('/borrows/' + borrowId, this.editForm).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success("编辑成功")
                     this.loadData()
