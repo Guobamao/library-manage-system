@@ -2,10 +2,10 @@
     <el-container v-loading="loading" style="display: flex; flex-direction: column">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="图书编号">
-                <el-input v-model="searchForm.isbn" placeholder="图书编号"></el-input>
+                <el-input v-model="searchForm.isbn" placeholder="图书编号" clearable></el-input>
             </el-form-item>
             <el-form-item label="书名">
-                <el-input v-model="searchForm.title" placeholder="书名"></el-input>
+                <el-input v-model="searchForm.title" placeholder="书名" clearable></el-input>
             </el-form-item>
             <el-form-item label="图书分类">
                 <el-select v-model="searchForm.categoryId" placeholder="图书分类" clearable>

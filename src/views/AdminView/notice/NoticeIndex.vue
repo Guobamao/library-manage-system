@@ -2,7 +2,7 @@
     <el-container v-loading="loading" style="display: flex; flex-direction: column">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="公告主题">
-                <el-input v-model="searchForm.title" placeholder="公告主题"></el-input>
+                <el-input v-model="searchForm.title" placeholder="公告主题" clearable   ></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button @click="search">查询</el-button>
@@ -75,7 +75,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="editFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitInfo">确 定</el-button>
+                <el-button type="primary" @click="submitInfo(editForm.id)">确 定</el-button>
             </div>
         </el-dialog>
     </el-container>
@@ -110,7 +110,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            adminRequest.get("/notice/page", {
+            adminRequest.get("/notices", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -128,7 +128,7 @@ export default {
         },
         search() {
             this.loading = true
-            adminRequest.get("/notice/page", {
+            adminRequest.get("/notices", {
                 params: {
                     title: this.searchForm.title,
                 },
@@ -157,7 +157,7 @@ export default {
             this.addFormVisible = true;
         },
         addNotice() {
-            adminRequest.post("/notice", this.addForm)
+            adminRequest.post("/notices", this.addForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("发布成功");
@@ -174,7 +174,7 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning",
             }).then(() => {
-                adminRequest.delete("/notice/" + row.id)
+                adminRequest.delete("/notices/" + row.id)
                     .then((res) => {
                         if (res.data.code === 1) {
                             this.$message.success("删除成功");
@@ -189,8 +189,8 @@ export default {
             this.editFormVisible = true;
             this.editForm = row;
         },
-        submitInfo() {
-            adminRequest.put("/notice", this.editForm)
+        submitInfo(noticeId) {
+            adminRequest.put("/notices/" + noticeId, this.editForm)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功");
