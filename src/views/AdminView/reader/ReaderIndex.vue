@@ -2,13 +2,13 @@
     <el-container v-loading="loading" style="display: flex; flex-direction: column; ">
         <el-form :inline="true" :model="searchForm">
             <el-form-item label="借书卡号">
-                <el-input v-model="searchForm.cardNumber" placeholder="借书卡号"></el-input>
+                <el-input v-model="searchForm.cardNumber" placeholder="借书卡号" clearable></el-input>
             </el-form-item>
             <el-form-item label="姓名">
-                <el-input v-model="searchForm.name" placeholder="姓名"></el-input>
+                <el-input v-model="searchForm.name" placeholder="姓名" clearable></el-input>
             </el-form-item>
             <el-form-item label="手机号">
-                <el-input v-model="searchForm.phone" placeholder="手机号"></el-input>
+                <el-input v-model="searchForm.phone" placeholder="手机号" clearable></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button @click="search">查询</el-button>
@@ -88,7 +88,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="editFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitInfo">确 定</el-button>
+                <el-button type="primary" @click="submitInfo(editForm.id)">确 定</el-button>
             </div>
         </el-dialog>
     </el-container>
@@ -133,7 +133,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true
-            adminRequest.get('/reader/page', {
+            adminRequest.get('/readers', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize
@@ -151,7 +151,7 @@ export default {
         },
         search() {
             this.loading = true
-            adminRequest.get('/reader/page', {
+            adminRequest.get('/readers', {
                 params: {
                     name: this.searchForm.name,
                     phone: this.searchForm.phone,
@@ -180,8 +180,8 @@ export default {
             this.editFormVisible = true
             this.editForm = row
         },
-        submitInfo() {
-            adminRequest.put('/reader', this.editForm)
+        submitInfo(readerId) {
+            adminRequest.put('/readers/' + readerId, this.editForm)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功")
@@ -198,7 +198,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                adminRequest.delete('/reader/' + row.id)
+                adminRequest.delete('/readers/' + row.id)
                     .then(res => {
                         if (res.data.code === 1) {
                             this.$message.success('删除成功')
@@ -210,7 +210,7 @@ export default {
             }).catch(() => { })
         },
         getReaderInfo(row) {
-            adminRequest.get('/reader/' + row.id)
+            adminRequest.get('/readers/' + row.id)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$msgbox({
