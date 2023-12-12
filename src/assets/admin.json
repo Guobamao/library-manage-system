@@ -42,6 +42,25 @@
             }
         ]
     },
+    "pending": {
+        "title": "审核管理",
+        "name": "pendingManagement",
+        "icon": "el-icon-s-order",
+        "child": [
+            {
+                "title": "借阅 / 归还审核",
+                "name": "BorrowPendingIndex",
+                "icon": "el-icon-mobile",
+                "path": "/admin/BorrowPendingIndex"
+            },
+            {
+                "title": "借书卡申请 / 挂失",
+                "name": "CardPendingIndex",
+                "icon": "el-icon-mobile",
+                "path": "/admin/CardPendingIndex"
+            }
+        ]
+    },
     "statistics": {
         "title": "统计分析",
         "name": "statistics",

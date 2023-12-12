@@ -2,8 +2,8 @@ import { userRequest } from "@/api";
 
 export default {
     // 显示借书卡信息
-    showCardInfo() {
-        userRequest.get("/card/info")
+    showCardInfo(readerId) {
+        userRequest.get("/card/info/" + readerId)
             .then(res => {
                 if (res.data.code === 1) {
                     this.cardInfo = res.data.data;
@@ -15,17 +15,17 @@ export default {
                             cancelButtonText: "取消",
                             type: "warning"
                         }).then(() => {
-                            this.cardApply();
+                            this.cardApply(readerId);
                         }).catch(() => { })
                     } else if (res.data.msg === '已申请，请勿重复申请') {
-                        this.showApplyStatus();
+                        this.showApplyStatus(readerId);
                     }
                 }
             })
     },
     // 申请借书卡
-    cardApply() {
-        userRequest.post("/card/apply")
+    cardApply(readerId) {
+        userRequest.post("/card/apply/" + readerId)
             .then(res => {
                 if (res.data.code === 1) {
                     this.$message.success("申请成功");
@@ -36,8 +36,8 @@ export default {
             })
     },
     // 挂失借书卡
-    cardReport() {
-        userRequest.post("/card/report")
+    cardReport(readerId) {
+        userRequest.post("/card/report/" + readerId)
             .then(res => {
                 if (res.data.code === 1) {
                     this.$message.success("挂失成功");
@@ -48,8 +48,8 @@ export default {
             })
     },
     // 显示借书卡申请进度
-    showApplyStatus() {
-        userRequest.get("/card/status")
+    showApplyStatus(readerId) {
+        userRequest.get("/card/status/" + readerId)
             .then(res => {
                 if (res.data.code === 1) {
                     this.applyCardStatus = res.data.data;

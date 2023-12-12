@@ -39,7 +39,8 @@ export default {
     methods: {
         loadData() {
             this.loading = true;
-            userRequest.get("/user/book/records", {
+            let readerId = localStorage.getItem("id");
+            userRequest.get("/" + readerId + "/borrows", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize

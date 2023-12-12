@@ -18,7 +18,7 @@
                                     style="vertical-align: middle;"></el-avatar>
                             </div>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="/user/info"
+                                <el-dropdown-item command="/user/profile"
                                     v-if="this.isAdmin === 'false'">个人中心</el-dropdown-item>
                                 <el-dropdown-item command="CardInfo" v-if="this.isAdmin === 'false'">借书卡</el-dropdown-item>
                                 <el-dropdown-item command="logout">退出登录</el-dropdown-item>
@@ -60,10 +60,6 @@
                     <el-container>
                         <router-view />
                     </el-container>
-                    <!-- <el-badge v-if="isAdmin == 'true'" :hidden="unsolvedCount <= 0" :value="unsolvedCount"
-                        style="position: absolute; right: 4rem; top: 5rem; border: none;">
-                        <el-button size="small" @click="showUnsolvedDialog">待处理</el-button>
-                    </el-badge> -->
                 </el-main>
             </el-container>
             <!-- 对话框 -->
@@ -77,8 +73,8 @@
                     <el-descriptions-item label="状态">{{ cardInfo.status === 1 ? '正常' : '挂失' }}</el-descriptions-item>
                 </el-descriptions>
                 <span slot="footer" class="dialog-footer">
-                    <el-button type="danger" @click="cardReport" size="small">挂失</el-button>
-                    <el-button v-if="cardInfo.status === 2" type="primary" @click="showApplyStatus"
+                    <el-button type="danger" @click="cardReport(cardInfo.readerId)" size="small">挂失</el-button>
+                    <el-button v-if="cardInfo.status === 2" type="primary" @click="showApplyStatus(cardInfo.readerId)"
                         size="small">申请进度</el-button>
                     <el-button type="primary" @click="cardInfoDialogVisible = false" size="small">确定</el-button>
                 </span>
@@ -88,77 +84,16 @@
                     <el-step title="提交申请" :description="applyCardStatus.applyTime"></el-step>
                     <el-step title="管理员审核"
                         :description="applyCardStatus.status === 0 ? '' : applyCardStatus.handleTime"></el-step>
-                    <el-step title="申请成功"
+                    <el-step :title="applyCardStatus.status === 1 ? '申请成功' : '申请失败'"
+                        :status="applyCardStatus.status === 1 ? 'success' : applyCardStatus.status === 2 ? 'error' : ''"
                         :description="applyCardStatus.status === 0 ? '' : applyCardStatus.handleTime"></el-step>
                 </el-steps>
                 <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" v-if="applyCardStatus.status === 2" @click="cardReport(cardInfo.readerId)"
+                        size="small">重新申请</el-button>
                     <el-button @click="applyCardDialogVisible = false" size="small">确定</el-button>
                 </span>
             </el-dialog>
-
-            <!-- 抽屉 -->
-            <!-- <el-drawer :visible.sync="drawerVisible" :with-header="false" :before-close="refreshBadge">
-                <el-collapse accordion style="margin: 20px;">
-                    <el-collapse-item title="待处理图书申请">
-                        <el-table :data="bookBorrowData" border size="small">
-                            <el-table-column prop="readerName" label="姓名" :show-overflow-tooltip="true">
-                                <template slot-scope="scope">
-                                    {{ scope.row.readerName ? scope.row.readerName : "未填写" }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="bookName" label="图书名称" :show-overflow-tooltip="true"></el-table-column>
-                            <el-table-column prop="type" label="类型">
-                                <template slot-scope="scope">
-                                    {{ scope.row.type === 0 ? "借阅" : "归还" }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="borrowTime" label="申请时间" :show-overflow-tooltip="true"></el-table-column>
-                            <el-table-column label="操作">
-                                <template slot-scope="scope">
-                                    <el-button type="primary" size="mini" @click="bookPass(scope.row)">
-                                        <i class="el-icon-check"></i>
-                                        通过
-                                    </el-button>
-                                    <br>
-                                    <el-button type="danger" size="mini" @click="bookReject(scope.row)">
-                                        <i class="el-icon-close"></i>
-                                        驳回
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-collapse-item>
-                    <el-collapse-item title="待处理借书卡申请">
-                        <el-table :data="cardApplyData" border size="small">
-                            <el-table-column prop="readerId" label="读者ID"></el-table-column>
-                            <el-table-column prop="name" label="姓名">
-                                <template slot-scope="scope">
-                                    {{ scope.row.name ? scope.row.name : "未填写" }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="applyTime" label="申请时间"></el-table-column>
-                            <el-table-column prop="type" label="类型">
-                                <template slot-scope="scope">
-                                    {{ scope.row.type === 0 ? "申请" : "挂失" }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作">
-                                <template slot-scope="scope">
-                                    <el-button type="primary" size="mini" @click="cardPass(scope.row)">
-                                        <i class="el-icon-check"></i>
-                                        通过
-                                    </el-button>
-                                    <br>
-                                    <el-button type="danger" size="mini" @click="cardReject(scope.row)">
-                                        <i class="el-icon-close"></i>
-                                        驳回
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-collapse-item>
-                </el-collapse>
-            </el-drawer> -->
         </el-container>
     </div>
 </template>
@@ -268,7 +203,7 @@ export default {
             if (command === "logout") {
                 this.logout();
             } else if (command === "CardInfo") {
-                this.showCardInfo();
+                this.showCardInfo(localStorage.getItem("id"));
                 console.log("CardInfo");
             } else {
                 window.open(command, "_blank")
@@ -284,9 +219,6 @@ export default {
         this.apiData = this.isAdmin === 'true' ? adminApi : userApi; // 判断是否为管理员,加载不同的菜单栏
         this.currentTabIndex = sessionStorage.getItem("currentTabIndex") || "HomePage";
         this.tabs = sessionStorage.getItem("tabs") ? JSON.parse(sessionStorage.getItem("tabs")) : this.tabs;
-        /* if (this.isAdmin === 'true') {
-            this.getUnsolvedCount();
-        } */
     }
 }
 </script>

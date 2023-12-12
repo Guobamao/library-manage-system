@@ -43,7 +43,7 @@ export default {
           }
         })
       } else {
-        userRequest.get("/user/notice/page", {
+        userRequest.get("/notices", {
           params: {
             page: 1,
             pageSize: 5

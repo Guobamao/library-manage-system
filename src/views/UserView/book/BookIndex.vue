@@ -125,7 +125,7 @@ export default {
     methods: {
         loadData() {
             this.loading = true;
-            userRequest.get('/user/book', {
+            userRequest.get('/books', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -140,7 +140,7 @@ export default {
                     this.$message.error(res.data.msg)
                 }
             })
-            userRequest.get('/user/book/category')
+            userRequest.get('/categories')
                 .then(res => {
                     if (res.data.code === 1) {
                         this.categoryData = res.data.data;
@@ -159,7 +159,7 @@ export default {
         },
         search() {
             this.loading = true;
-            userRequest.get('/user/book', {
+            userRequest.get('/books', {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize,
@@ -178,7 +178,7 @@ export default {
             })
         },
         getBookInfo(row) {
-            userRequest.get('/user/book/' + row.id)
+            userRequest.get('/books/' + row.id)
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.bookInfo = res.data.data;
@@ -191,9 +191,8 @@ export default {
         },
         // 申请借阅图书
         bookBorrow(row) {
-            userRequest.post("/user/book/borrow", {
-                bookId: row.id
-            }).then(res => {
+            let readerId = localStorage.getItem("id");
+            userRequest.post("/" + readerId + "/borrows/" + row.id).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success("申请成功");
                     // TODO: 跳转到申请记录页面

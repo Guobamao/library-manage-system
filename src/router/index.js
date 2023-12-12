@@ -53,6 +53,14 @@ const routes = [
         component: () => import('../views/AdminView/category/CategoryIndex.vue')
       },
       {
+        path: 'BorrowPendingIndex',
+        component: () => import("../views/AdminView/pending/BorrowPendingIndex.vue")
+      },
+      {
+        path: 'CardPendingIndex',
+        component: () => import("../views/AdminView/pending/CardPendingIndex.vue")
+      },
+      {
         path: 'StatisticsIndex',
         component: () => import('../views/AdminView/statistics/StatisticsIndex.vue')
       }
@@ -82,10 +90,10 @@ const routes = [
     ]
   },
   {
-    path: '/user/info',
-    name: 'UserInfo',
+    path: '/user/profile',
+    name: 'UserProfile',
     meta: { requiresAuth: true }, // 需要登录
-    component: () => import('../views/UserView/userInfo/UserInfoIndex.vue')
+    component: () => import('../views/UserView/userProfile/UserProfileIndex.vue')
   }
 ]
 

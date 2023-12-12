@@ -111,7 +111,8 @@ export default {
             }
         },
         loadData() {
-            userRequest.get('/user/info')
+            let readerId = localStorage.getItem("id");
+            userRequest.get(readerId + '/profile')
                 .then(res => {
                     if (res.data.code === 1) {
                         this.userInfo = res.data.data;
@@ -122,7 +123,8 @@ export default {
                 })
         },
         onSubmit() {
-            userRequest.put('/user', this.userInfo)
+            let readerId = localStorage.getItem("id");
+            userRequest.put(readerId + '/profile', this.userInfo)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$message.success("修改成功");

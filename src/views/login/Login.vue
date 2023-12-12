@@ -64,6 +64,7 @@ export default {
                             password: this.loginForm.password,
                         }).then(res => {
                             if (res.data.code === 1) {
+                                localStorage.setItem('id', res.data.data.id)
                                 localStorage.setItem('username', res.data.data.username)
                                 localStorage.setItem('token', res.data.data.token)
                                 localStorage.setItem('isAdmin', true)
@@ -80,11 +81,12 @@ export default {
                             }
                         })
                     } else { // 用户登录
-                        userRequest.post('/user/login', {
+                        userRequest.post('/login', {
                             username: this.loginForm.username,
                             password: this.loginForm.password,
                         }).then(res => {
                             if (res.data.code === 1) {
+                                localStorage.setItem('id', res.data.data.id)
                                 localStorage.setItem('username', res.data.data.username)
                                 localStorage.setItem('token', res.data.data.token)
                                 localStorage.setItem('isAdmin', false)

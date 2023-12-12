@@ -30,7 +30,7 @@ adminRequest.interceptors.response.use(response => {
 
 // 创建用户端的axios实例
 const userRequest = axios.create({
-    baseURL: 'http://localhost:8088/',
+    baseURL: 'http://localhost:8088/api/user',
     timeout: 5000
 })
 

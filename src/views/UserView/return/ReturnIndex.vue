@@ -44,7 +44,8 @@ export default {
     methods: {
         loadData() {
             this.loading = true;
-            userRequest.get("/user/book/return/records", {
+            let readerId = localStorage.getItem("id");
+            userRequest.get("/" + readerId + "/returns", {
                 params: {
                     page: this.currentPage,
                     pageSize: this.pageSize
@@ -61,9 +62,8 @@ export default {
             })
         },
         handleReturn(row) {
-            userRequest.post("/user/book/return", {
-                bookId: row.bookId
-            }).then(res => {
+            let readerId = localStorage.getItem("id");
+            userRequest.put("/" + readerId + "/returns/" + row.bookId).then(res => {
                 if (res.data.code === 1) {
                     this.$message.success("申请归还成功");
                     this.loadData();
