@@ -143,7 +143,7 @@ export default {
                     }
                 });
             } else {
-                userRequest.post("/user/logout").then(res => {
+                userRequest.post("/logout").then(res => {
                     if (res.data.code === 1) {
                         this.$message.success("退出登录成功");
                         this.$router.push("/login");

@@ -60,18 +60,5 @@
                 "path": "/admin/CardPendingIndex"
             }
         ]
-    },
-    "statistics": {
-        "title": "统计分析",
-        "name": "statistics",
-        "icon": "el-icon-s-data",
-        "child": [
-            {
-                "title": "借阅统计",
-                "name": "StatisticsIndex",
-                "icon": "el-icon-mobile",
-                "path": "/admin/StatisticsIndex"
-            }
-        ]
     }
 }

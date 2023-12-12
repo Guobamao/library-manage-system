@@ -59,10 +59,6 @@ const routes = [
       {
         path: 'CardPendingIndex',
         component: () => import("../views/AdminView/pending/CardPendingIndex.vue")
-      },
-      {
-        path: 'StatisticsIndex',
-        component: () => import('../views/AdminView/statistics/StatisticsIndex.vue')
       }
     ]
   },
