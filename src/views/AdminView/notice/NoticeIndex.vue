@@ -1,26 +1,27 @@
 <template>
     <el-container v-loading="loading" style="display: flex; flex-direction: column">
-        <el-form :inline="true" :model="searchForm">
+        <el-form :inline="true" :model="searchForm" size="small">
             <el-form-item label="公告主题">
-                <el-input v-model="searchForm.title" placeholder="公告主题" clearable   ></el-input>
+                <el-input v-model="searchForm.title" placeholder="公告主题" clearable></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button @click="search">查询</el-button>
             </el-form-item>
-            <el-button type="primary" @click="handleSubmitClick">发布公告</el-button>
+            <el-button type="primary" @click="handleSubmitClick" size="small">发布公告</el-button>
         </el-form>
-        <el-table ref="multipleTable" :data="noticeData.records" tooltip-effect="dark" style="width: 100%">
+        <el-table ref="multipleTable" :data="noticeData.records" tooltip-effect="dark"
+            :default-sort="{ prop: 'createTime', order: 'descending' }" style="width: 100%">
             <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="id" label="ID" width="50"></el-table-column>
-            <el-table-column label="公告主题" width="150" show-overflow-tooltip="true">
+            <el-table-column prop="id" label="ID" width="80" sortable></el-table-column>
+            <el-table-column label="公告主题" width="150" show-overflow-tooltip="true" sortable>
                 <template slot-scope="scope">
                     <el-link type="primary" :underline="false" @click="showInfo(scope.row)">{{ scope.row.title }}</el-link>
                 </template>
             </el-table-column>
-            <el-table-column label="公告内容" prop="content" width="250" show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="发布者" prop="createUserName" width="100"></el-table-column>
-            <el-table-column label="发布时间" prop="createTime" width="200"></el-table-column>
-            <el-table-column label="过期时间" prop="expireTime" width="200"></el-table-column>
+            <el-table-column label="公告内容" prop="content" width="250" show-overflow-tooltip="true" sortable></el-table-column>
+            <el-table-column label="发布者" prop="createUserName" width="100" sortable></el-table-column>
+            <el-table-column label="发布时间" prop="createTime" width="200" sortable></el-table-column>
+            <el-table-column label="过期时间" prop="expireTime" width="200" sortable></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="primary" plain size="mini" @click="showEdit(scope.row)">编辑</el-button>
@@ -74,8 +75,8 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="editFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitInfo(editForm.id)">确 定</el-button>
+                <el-button @click="editFormVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="submitInfo(editForm.id)" size="small">确 定</el-button>
             </div>
         </el-dialog>
     </el-container>

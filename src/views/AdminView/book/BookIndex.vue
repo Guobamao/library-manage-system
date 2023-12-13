@@ -1,6 +1,6 @@
 <template>
-    <el-container v-loading="loading" style="display: flex; flex-direction: column">
-        <el-form :inline="true" :model="searchForm">
+    <el-container v-loading="loading" style="display: flex; flex-direction: column;">
+        <el-form :inline="true" :model="searchForm" size="small">
             <el-form-item label="图书编号">
                 <el-input v-model="searchForm.isbn" placeholder="图书编号" clearable></el-input>
             </el-form-item>
@@ -16,10 +16,10 @@
             <el-form-item>
                 <el-button @click="search">查询</el-button>
             </el-form-item>
-            <el-button type="primary" @click="handleSubmitClick">添加图书</el-button>
+            <el-button type="primary" @click="handleSubmitClick" size="small">添加图书</el-button>
         </el-form>
 
-        <el-table ref="multipleTable" :data="bookData.records" tooltip-effect="dark" style="width: 100%">
+        <el-table ref="multipleTable" :data="bookData.records" tooltip-effect="dark" style="width: 100%; max-height: 30.3rem; overflow-y: auto;">
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column prop="id" label="ID" width="50"></el-table-column>
             <el-table-column label="封面" prop="cover" width="120">
@@ -74,7 +74,7 @@
                 </el-form-item>
                 <el-form-item label="出版日期" label-width="20%" required>
                     <el-date-picker v-model="addForm.publishDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
-                        style="width: calc(30rem - 36%);"></el-date-picker>
+                        style="width: 21.7rem"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="简介" label-width="20%" required>
                     <el-input type="textarea" v-model="addForm.description"></el-input>
@@ -92,7 +92,7 @@
                     <el-input v-model="addForm.language" autocomplete="off" placeholder="请输入语言"></el-input>
                 </el-form-item>
                 <el-form-item label="图书分类" label-width="20%" required>
-                    <el-select v-model="addForm.categoryId" placeholder="图书分类" style="width: calc(30rem - 36%);">
+                    <el-select v-model="addForm.categoryId" placeholder="图书分类" style="width: 21.7rem;">
                         <el-option v-for="item in categoryData.records" :key="item.id" :label="item.name"
                             :value="item.id"></el-option>
                     </el-select>
@@ -106,7 +106,7 @@
 
         <!-- 显示图书信息对话框 -->
         <el-dialog title="图书信息" :visible.sync="bookInfoVisible">
-            <el-descriptions :column="2" border>
+            <el-descriptions :column="2" border direction="vertical">
                 <el-descriptions-item>
                     <template slot="label">图书封面</template>
                     <img :src="bookInfo.cover" alt="" style="width: 100px;">
@@ -161,13 +161,13 @@
                 </el-descriptions-item>
             </el-descriptions>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="bookInfoVisible = false">确 定</el-button>
+                <el-button type="primary" @click="bookInfoVisible = false" size="small">确 定</el-button>
             </span>
         </el-dialog>
 
         <!-- 编辑图书对话框 -->
         <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="30rem">
-            <el-form :model="editForm">
+            <el-form :model="editForm" style="max-height: 400px; overflow-y: auto;">
                 <el-form-item label="图书名称" label-width="20%" required>
                     <el-input v-model="editForm.title" autocomplete="off" placeholder="请输入图书名称"></el-input>
                 </el-form-item>
@@ -179,7 +179,7 @@
                 </el-form-item>
                 <el-form-item label="出版日期" label-width="20%" required>
                     <el-date-picker v-model="editForm.publishDate" type="date" placeholder="选择日期"
-                        style="width: calc(30rem - 36%);"></el-date-picker>
+                        style="width: 21.5rem"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="ISBN" label-width="20%" required>
                     <el-input v-model="editForm.isbn" autocomplete="off" placeholder="请输入ISBN"></el-input>
@@ -200,15 +200,15 @@
                     <el-input v-model="editForm.language" autocomplete="off" placeholder="请输入语言"></el-input>
                 </el-form-item>
                 <el-form-item label="图书分类" label-width="20%" required>
-                    <el-select v-model="editForm.categoryId" placeholder="图书分类" style="width: calc(30rem - 36%);">
+                    <el-select v-model="editForm.categoryId" placeholder="图书分类" style="width: 21.5rem">
                         <el-option v-for="item in categoryData.records" :key="item.id" :label="item.name"
                             :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="editFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitInfo(editForm.id)">确 定</el-button>
+                <el-button @click="editFormVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="submitInfo(editForm.id)" size="small">确 定</el-button>
             </div>
         </el-dialog>
     </el-container>
@@ -326,6 +326,19 @@ export default {
                     if (res.data.code === 1) {
                         this.$message.success("添加成功");
                         this.addFormVisible = false;
+                        this.addForm = {
+                            title: '',
+                            author: '',
+                            publisher: '',
+                            publishDate: '',
+                            isbn: '',
+                            description: '',
+                            cover: '',
+                            price: '',
+                            quantity: '',
+                            categoryId: '',
+                            language: ''
+                        }
                         this.loadData();
                     } else {
                         this.$message.error(res.data.msg);

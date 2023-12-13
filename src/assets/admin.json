@@ -50,13 +50,13 @@
             {
                 "title": "借阅 / 归还审核",
                 "name": "BorrowPendingIndex",
-                "icon": "el-icon-mobile",
+                "icon": "el-icon-s-management",
                 "path": "/admin/BorrowPendingIndex"
             },
             {
                 "title": "借书卡申请 / 挂失",
                 "name": "CardPendingIndex",
-                "icon": "el-icon-mobile",
+                "icon": "el-icon-s-claim",
                 "path": "/admin/CardPendingIndex"
             }
         ]

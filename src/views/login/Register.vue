@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { userRequest } from '@/api'
 export default {
     data() {
         return {
@@ -63,7 +64,7 @@ export default {
                         this.$message.error('两次输入的密码不一致');
                         return;
                     }
-                    this.$axios.post('/register', {
+                    userRequest.post('/register', {
                         username: this.registerForm.username,
                         password: this.registerForm.password,
                         password2: this.registerForm.password2,
