@@ -61,7 +61,10 @@ export default {
             this.$refs.registerForm.validate(valid => {
                 if (valid) {
                     if (this.registerForm.password != this.registerForm.password2) {
-                        this.$message.error('两次输入的密码不一致');
+                        this.$notify.error({
+                            title: '错误',
+                            message: '两次输入的密码不一致'
+                        });
                         return;
                     }
                     userRequest.post('/register', {
@@ -71,10 +74,16 @@ export default {
                         phone: this.registerForm.phone
                     }).then(res => {
                         if (res.data.code == 1) {
-                            this.$message.success('注册成功');
+                            this.$notify.success({
+                                title: '成功',
+                                message: "注册成功，请登录"
+                            });
                             this.$router.push('/login');
                         } else {
-                            this.$message.error(res.data.msg);
+                            this.$notify.error({
+                                title: '错误',
+                                message: res.data.msg
+                            });
                         }
                     })
                 }

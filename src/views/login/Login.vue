@@ -77,7 +77,10 @@ export default {
                                     path: '/'
                                 })
                             } else {
-                                this.$message.error(res.data.msg)
+                                this.$notify.error({
+                                    title: '登录失败',
+                                    message: res.data.msg
+                                })
                             }
                         })
                     } else { // 用户登录
@@ -99,7 +102,10 @@ export default {
                                     path: '/'
                                 })
                             } else {
-                                this.$message.error(res.data.msg)
+                                this.$notify.error({
+                                    title: '登录失败',
+                                    message: res.data.msg
+                                })
                             }
                         })
                     }

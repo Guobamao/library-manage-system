@@ -7,6 +7,7 @@
             <el-table-column label="图书类型" prop="categoryName" width="120"></el-table-column>
             <el-table-column label="出版社" prop="publisher" width="200"></el-table-column>
             <el-table-column label="借阅时间" prop="borrowTime" width="200"></el-table-column>
+            <el-table-column label="应还时间" prop="returnTime" width="200"></el-table-column>
             <el-table-column label="当前状态">
                 <template slot-scope="scope">
                     <el-tag :type="statusColor[scope.row.status]">
