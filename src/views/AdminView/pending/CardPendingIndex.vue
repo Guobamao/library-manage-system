@@ -3,8 +3,8 @@ import { Row } from 'element-ui';
 <template>
     <el-container v-loading="loading" style="display: flex; flex-direction: column">
         <el-form :inline="true" :model="searchForm" size="small">
-            <el-form-item label="借书卡号">
-                <el-input v-model="searchForm.readerName" placeholder="借书卡号" clearable></el-input>
+            <el-form-item label="读者姓名">
+                <el-input v-model="searchForm.readerName" placeholder="读者姓名" clearable></el-input>
             </el-form-item>
             <el-form-item label="类型">
                 <el-select v-model="searchForm.type" placeholder="类型" clearable>
