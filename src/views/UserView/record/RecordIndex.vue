@@ -1,6 +1,7 @@
 <template>
     <el-container v-loading="loading" style="display: flex; flex-direction: column;">
         <el-table :data="recordList.records" tooltip-effect="dark" style="width: 100%;">
+            <el-table-column width="50"></el-table-column>
             <el-table-column label="图书名称" prop="bookName" width="200"></el-table-column>
             <el-table-column label="作者" prop="author" width="150"></el-table-column>
             <el-table-column label="图书类型" prop="categoryName" width="120"></el-table-column>

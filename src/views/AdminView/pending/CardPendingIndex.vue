@@ -2,7 +2,7 @@
 import { Row } from 'element-ui';
 <template>
     <el-container v-loading="loading" style="display: flex; flex-direction: column">
-        <el-form :inline="true" :model="searchForm">
+        <el-form :inline="true" :model="searchForm" size="small">
             <el-form-item label="借书卡号">
                 <el-input v-model="searchForm.readerName" placeholder="借书卡号" clearable></el-input>
             </el-form-item>

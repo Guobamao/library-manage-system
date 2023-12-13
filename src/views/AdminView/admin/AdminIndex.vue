@@ -1,6 +1,6 @@
 <template>
     <el-container v-loading="loading" style="display: flex; flex-direction: column;">
-        <el-form :inline="true" :model="searchForm">
+        <el-form :inline="true" :model="searchForm"  size="small">
             <el-form-item label="用户名">
                 <el-input v-model="searchForm.username" placeholder="用户名"></el-input>
             </el-form-item>
@@ -13,7 +13,7 @@
             <el-form-item>
                 <el-button @click="search">查询</el-button>
             </el-form-item>
-            <el-button type="primary" @click="handleSubmitClick">添加</el-button>
+            <el-button type="primary" @click="handleSubmitClick"  size="small">添加</el-button>
         </el-form>
         <el-table ref="multipleTable" :data="adminData.records" tooltip-effect="dark" style="width: 100%">
             <el-table-column type="selection" width="55">

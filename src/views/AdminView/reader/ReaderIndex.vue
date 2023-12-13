@@ -1,6 +1,6 @@
 <template>
     <el-container v-loading="loading" style="display: flex; flex-direction: column; ">
-        <el-form :inline="true" :model="searchForm">
+        <el-form :inline="true" :model="searchForm" size="small">
             <el-form-item label="借书卡号">
                 <el-input v-model="searchForm.cardNumber" placeholder="借书卡号" clearable></el-input>
             </el-form-item>
@@ -58,7 +58,7 @@
 
         <!-- 页面对话框 -->
         <!-- 读者编辑对话框 -->
-        <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="30rem">
+        <el-dialog title="编辑信息" :visible.sync="editFormVisible" width="30rem" style="max-height: fit-content;">
             <el-form :model="editForm">
                 <el-form-item label="借书卡号" label-width="20%">
                     <el-input v-model="editForm.cardNumber" autocomplete="off" placeholder="请输入借书卡号"></el-input>
@@ -87,8 +87,8 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="editFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitInfo(editForm.id)">确 定</el-button>
+                <el-button @click="editFormVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="submitInfo(editForm.id)" size="small">确 定</el-button>
             </div>
         </el-dialog>
     </el-container>
@@ -240,3 +240,10 @@ export default {
     }
 }
 </script>
+
+<style>
+    .el-dialog {
+        max-height: 30rem;
+        overflow-y: auto;
+    }
+</style>

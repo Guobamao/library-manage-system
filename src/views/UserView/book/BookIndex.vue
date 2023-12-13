@@ -17,7 +17,7 @@
                 <el-button @click="search">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="bookData.records" tooltip-effect="dark" style="width: 100%">
+        <el-table :data="bookData.records" tooltip-effect="dark"  style="width: 100%; max-height: 33rem; overflow-y: auto;">
             <el-table-column width="50"></el-table-column>
             <el-table-column label="图书名称" prop="title" width="200">
                 <template slot-scope="scope">
@@ -210,3 +210,10 @@ export default {
     }
 }
 </script>
+
+<style>
+    .el-dialog {
+        max-height: 30rem;
+        overflow-y: auto;
+    }
+</style>

@@ -7,7 +7,7 @@
             {
                 "title": "书籍查询",
                 "name": "BookIndex",
-                "icon": "el-icon-mobile",
+                "icon": "el-icon-reading",
                 "path": "/user/BookIndex"
             },
             {
@@ -19,7 +19,7 @@
             {
                 "title": "书籍归还",
                 "name": "ReturnIndex",
-                "icon": "el-icon-s-custom",
+                "icon": "el-icon-coordinate",
                 "path": "/user/ReturnIndex"
             }
         ]
